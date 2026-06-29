@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Skinalyze | History</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#e4ecf7 100%);min-height:100vh;padding:30px}
+    .card{border-radius:12px}
+    .sidebar-menu { background: #1a1e29; width: 280px; border-right: 1px solid rgba(255,255,255,0.1); }
+    .nav-link-custom:hover { background: rgba(255,255,255,0.08); color: #a78bfa !important; }
+  </style>
+</head>
+<body>
+    <button class="btn btn-light position-fixed top-0 start-0 m-3 shadow rounded-circle d-flex align-items-center justify-content-center no-print" 
+        type="button" data-bs-toggle="offcanvas" data-bs-target="#skinalyzeDashboard" style="width: 50px; height: 50px; z-index: 1050;">
+      <span style="font-size: 22px; color: #4a5c4e;">☰</span>
+    </button>
+
+    <div class="offcanvas offcanvas-start text-white sidebar-menu no-print" tabindex="-1" id="skinalyzeDashboard">
+      <div class="offcanvas-header border-bottom border-secondary py-4">
+        <h5 class="offcanvas-title fw-bold text-success">✨ Skinalyze Dashboard</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column justify-content-between px-3 py-4">
+        <ul class="nav nav-pills flex-column mb-auto gap-2">
+          <li class="nav-item">
+            <a href="/" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom">
+              <span>🏠</span> <span class="fw-medium">Homepage</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/info" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom">
+              <span>📖</span> <span class="fw-medium">Skincare Info Guide</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/history" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom bg-secondary bg-opacity-25">
+              <span>📜</span> <span class="fw-medium">Recent History</span>
+            </a>
+          </li>
+        </ul>
+        <div class="p-3 bg-dark rounded-3 border border-secondary text-center">
+          <small class="text-muted d-block mb-1">System Status</small>
+          <span class="badge bg-success px-2 py-1 rounded-pill">Matrix Engine Ready</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- single offcanvas and toggle above; duplicates removed -->
+  <div class="container">
+    <div class="card p-4 shadow-sm">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="fw-bold mb-0">Recent Session</h2>
+        {% if history %}
+        <form action="/history/clear" method="POST" onsubmit="return confirm('Clear all history? This cannot be undone.')">
+          <button type="submit" class="btn btn-sm btn-outline-danger">Clear History</button>
+        </form>
+        {% endif %}
+      </div>
+
+      {% if history %}
+      <div class="table-responsive mt-3">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Skin Type</th>
+              <th>Issue</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in history[:5] %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ item.user_name or '—' }}</td>
+              <td>{{ item.skin_type or '—' }}</td>
+              <td>{{ item.issue or '—' }}</td>
+              <td>{{ item.date }}</td>
+              <td><a class="btn btn-sm btn-primary" href="/history/view/{{ item.id }}">View Recommendations</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <div class="alert alert-light">No history saved in this session yet.</div>
+      {% endif %}
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

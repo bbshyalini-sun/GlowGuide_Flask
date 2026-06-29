@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skinalyze | Personalized Routine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #fcfbf7; color: #333; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #4a5c4e; text-align: center; margin-bottom: 5px; font-weight: bold; }
+        .subtitle { text-align: center; color: #777; font-size: 16px; margin-bottom: 35px; }
+        .category-block { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 25px; border-left: 5px solid #4a5c4e; }
+        .category-title { font-size: 20px; color: #4a5c4e; margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; font-weight: bold; }
+        .product-name { font-weight: bold; font-size: 17px; color: #222; }
+        .brand { font-style: italic; color: #666; font-size: 14px; }
+        .description { margin: 6px 0; font-size: 15px; color: #555; }
+        .ingredients { font-size: 13px; color: #c28560; font-weight: 600; }
+        .no-results { text-align: center; padding: 40px; background: white; border-radius: 10px; }
+        .sidebar-menu { background: #1a1e29; width: 280px; border-right: 1px solid rgba(255,255,255,0.1); }
+        .nav-link-custom:hover { background: rgba(255,255,255,0.08); color: #a78bfa !important; }
+        .action-btn { background-color: #4a5c4e; color: white; font-weight: bold; border: none; padding: 10px 20px; border-radius: 20px; text-decoration: none; display: inline-block; }
+        .action-btn:hover { background-color: #3b4a3e; color: white; }
+        
+        /* Dynamic Printing Style Formats */
+        @media print {
+            body { background-color: white; color: black; max-width: 100%; margin: 0; padding: 20px; }
+            .no-print, .btn, button, .sidebar-menu { display: none !important; }
+            .category-block { border-left: 3px solid #000; box-shadow: none; background: transparent; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn btn-light position-fixed top-0 start-0 m-3 shadow rounded-circle d-flex align-items-center justify-content-center no-print" 
+            type="button" data-bs-toggle="offcanvas" data-bs-target="#skinalyzeDashboard" style="width: 50px; height: 50px; z-index: 1050;">
+        <span style="font-size: 22px; color: #4a5c4e;">☰</span>
+    </button>
+
+    <div class="offcanvas offcanvas-start text-white sidebar-menu no-print" tabindex="-1" id="skinalyzeDashboard">
+        <div class="offcanvas-header border-bottom border-secondary py-4">
+            <h5 class="offcanvas-title fw-bold text-success">✨ Skinalyze Dashboard</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column justify-content-between px-3 py-4">
+            <ul class="nav nav-pills flex-column mb-auto gap-2">
+                <li class="nav-item">
+                    <a href="/" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom">
+                        <span>🏠</span> <span class="fw-medium">Homepage</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/info" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom">
+                        <span>📖</span> <span class="fw-medium">Skincare Info Guide</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/history" class="nav-link text-white py-3 px-3 rounded-3 d-flex align-items-center gap-3 nav-link-custom">
+                        <span>📜</span> <span class="fw-medium">Recent History</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <h1>Your Skinalyze Matrix Blueprint</h1>
+        <p class="subtitle">Custom configuration targeted precisely for <strong>{{ skin_type }} Skin</strong> addressing <strong>{{ skin_issue }}</strong></p>
+        {% if user_name %}
+            <p class="text-center" style="margin-top:6px; color:#5a5a5a;">Hello, <strong>{{ user_name }}</strong> — here's your personalized result.</p>
+        {% endif %}
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <a href="/assessment" data-no-clear="1" id="rerun-link" class="text-decoration-none fw-bold" style="color: #4a5c4e;">&larr; Re-run Diagnostic System</a>
+        <button onclick="window.print()" class="action-btn shadow-sm">🖨️ Export / Print</button>
+    </div>
+
+    {% if recommendations %}
+        {% for category, products in recommendations.items() %}
+            <div class="category-block">
+                <h2 class="category-title">Category: {{ category }}</h2>
+                {% for prod in products %}
+                    <div class="product-card mb-3">
+                        <span class="product-name">{{ prod['product_name'] }}</span>
+                        
+                        {% if prod['active_ingredients'] %}
+                            <div class="ingredients">Key Active Ingredient(s): {{ prod['active_ingredients'] }}</div>
+                        {% else %}
+                            <div class="ingredients">Key Active Ingredient(s): Standard Compounding Matrix</div>
+                        {% endif %}
+                    </div>
+                    {% if not loop.last %}<hr style="border: 0; border-top: 1px dashed #eee; margin: 15px 0;">{% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="category-block">
+            <h2 class="category-title">How helpful was this recommendation list?</h2>
+            <p class="description">Are you satisfied with the results?</p>
+            <div class="d-flex gap-3 flex-wrap mb-3">
+                <button id="feedback-yes" type="button" class="btn btn-success px-4">Yes</button>
+                <button id="feedback-no" type="button" class="btn btn-outline-secondary px-4">No</button>
+            </div>
+            <div id="feedback-message" class="alert alert-light border rounded-3" style="display:none; font-size:0.95rem; color:#3e3e3e; background:#f9f9f9; border-color:#e6e6e6;"></div>
+        </div>
+    {% else %}
+        <div class="no-results shadow-sm">
+            <h3>No matching profile set found.</h3>
+        </div>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const yesBtn = document.getElementById('feedback-yes');
+        const noBtn = document.getElementById('feedback-no');
+        const messageArea = document.getElementById('feedback-message');
+
+        // temporary user name used to determine whether to prompt on leave
+        const tempUserName = {{ (user_name|tojson) if user_name else 'null' }};
+
+        // helper to clear temporary session on server
+        function clearTempSessionAndNavigate(href){
+            fetch('/end_session', {method: 'POST', credentials: 'same-origin'}).finally(()=> {
+                window.location = href;
+            });
+        }
+
+        if (tempUserName) {
+            // prevent native unload prompt if user intentionally re-runs diagnostic
+            window._suppressUnload = false;
+
+            const rerun = document.querySelector('[data-no-clear="1"]');
+            if (rerun) {
+                rerun.addEventListener('click', function(){
+                    // user intends to retake — suppress unload prompt and allow navigation
+                    window._suppressUnload = true;
+                });
+            }
+
+            // intercept other links to show explicit confirmation
+            document.querySelectorAll('a[href]').forEach(a => {
+                if (a.dataset && a.dataset.noClear) return; // skip no-clear links
+                const href = a.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+                a.addEventListener('click', function(e){
+                    e.preventDefault();
+                    if (confirm('Leave results? This will end your temporary session and remove your name.')){
+                        clearTempSessionAndNavigate(href);
+                    }
+                });
+            });
+
+            // show native leave confirmation for tab/window close
+            window.addEventListener('beforeunload', function(e){
+                if (window._suppressUnload) return;
+                e.preventDefault();
+                e.returnValue = '';
+            });
+
+            // try to clear session on unload using sendBeacon
+            window.addEventListener('unload', function(){
+                try{
+                    navigator.sendBeacon('/end_session');
+                }catch(err){ /* ignore */ }
+            });
+        }
+
+        if (yesBtn && noBtn && messageArea) {
+            yesBtn.addEventListener('click', () => {
+                messageArea.textContent = 'Thank you for using Skinalyze services.';
+                messageArea.style.display = 'block';
+                messageArea.className = 'alert alert-success border rounded-3';
+            });
+
+            noBtn.addEventListener('click', () => {
+                messageArea.textContent = 'We apologize for the experience. Would you like to retry the diagnostic?';
+                messageArea.style.display = 'block';
+                messageArea.className = 'alert alert-warning border rounded-3';
+            });
+        }
+    </script>
+</body>
+</html>
