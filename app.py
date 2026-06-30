@@ -188,22 +188,33 @@ elif st.session_state.active_view == "Results":
     else:
         try:
             conn = get_db_connection()
-            issue_placeholders = ",".join("?" * len(st.session_state.tracked_skin_issues))
             
-            # FIXED LOGIC: Uses standard grouping so a product matches the Skin Type 
-            # AND matches ANY (at least one) of the selected target skin concerns.
+            # Map issues safely to integers to prevent data type mismatches
+            issue_ids = [int(x) for x in st.session_state.tracked_skin_issues]
+            skin_type_id = int(st.session_state.tracked_skin_type)
+            
+            issue_placeholders = ",".join("?" * len(issue_ids))
+            
+            # IMPROVED QUERY LOGIC: Segregates table joins into an independent 
+            # sub-selection block to guarantee matching entries are caught cleanly.
             query = f"""
-                SELECT DISTINCT p.product_id, p.product_name, c.category_name
+                SELECT p.product_id, p.product_name, c.category_name
                 FROM product p
-                JOIN product_skin_type pst ON p.product_id = pst.product_id
-                JOIN product_skin_issue psi ON p.product_id = psi.product_id
                 JOIN category c ON p.category_id = c.category_id
-                WHERE pst.skin_type_id = ? 
-                  AND psi.issue_id IN ({issue_placeholders})
+                WHERE p.product_id IN (
+                    SELECT pst.product_id 
+                    FROM product_skin_type pst
+                    WHERE pst.skin_type_id = ?
+                )
+                AND p.product_id IN (
+                    SELECT psi.product_id 
+                    FROM product_skin_issue psi
+                    WHERE psi.issue_id IN ({issue_placeholders})
+                )
                 ORDER BY c.category_id, p.product_name
             """
             
-            execution_params = [st.session_state.tracked_skin_type] + st.session_state.tracked_skin_issues
+            execution_params = [skin_type_id] + issue_ids
             matched_records = conn.execute(query, execution_params).fetchall()
             conn.close()
             
