@@ -16,6 +16,13 @@ st.markdown("""
     .brand-meta-text { font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
     .product-main-title { font-size: 19px; color: #1E293B; margin: 4px 0 8px 0; font-weight: 600; }
     
+    /* Force sidebar buttons to align text to the left side */
+    div[data-testid="stSidebar"] button {
+        display: flex;
+        justify-content: flex-start !important;
+        text-align: left !important;
+    }
+    
     /* Native Print Formatting Optimization overrides */
     @media print {
         header, footer, .stButton, .stDownloadButton, [data-testid="stSidebar"], [data-testid="stHeader"] { display: none !important; }
@@ -91,16 +98,16 @@ with st.sidebar:
     st.markdown("Use this panel to navigate across core system sections instantly.")
     st.write("---")
     
-    # Navigation link items
-    if st.button("🏠 System Homepage", use_container_width=True, alignment="left"):
+    # Navigation link items (Fixed: alignment variable stripped out, styled via CSS rules above)
+    if st.button("🏠 System Homepage", use_container_width=True):
         st.session_state.active_view = "Home"
         st.rerun()
         
-    if st.button("📋 Skin Diagnostic Assessment", use_container_width=True, alignment="left"):
+    if st.button("📋 Skin Diagnostic Assessment", use_container_width=True):
         st.session_state.active_view = "Assessment"
         st.rerun()
         
-    if st.button("🛒 Recommendation Engine Results", use_container_width=True, alignment="left"):
+    if st.button("🛒 Recommendation Engine Results", use_container_width=True):
         if not st.session_state.tracked_skin_issues:
             st.sidebar.warning("⚠️ Complete assessment inputs first.")
         else:
