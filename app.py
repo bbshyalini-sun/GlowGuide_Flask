@@ -190,7 +190,8 @@ elif st.session_state.active_view == "Results":
             conn = get_db_connection()
             issue_placeholders = ",".join("?" * len(st.session_state.tracked_skin_issues))
             
-            # FIXED: Removed p.product_url column selection to perfectly align with your product table properties
+            # FIXED LOGIC: Uses standard grouping so a product matches the Skin Type 
+            # AND matches ANY (at least one) of the selected target skin concerns.
             query = f"""
                 SELECT DISTINCT p.product_id, p.product_name, c.category_name
                 FROM product p
@@ -198,7 +199,7 @@ elif st.session_state.active_view == "Results":
                 JOIN product_skin_issue psi ON p.product_id = psi.product_id
                 JOIN category c ON p.category_id = c.category_id
                 WHERE pst.skin_type_id = ? 
-                AND psi.issue_id IN ({issue_placeholders})
+                  AND psi.issue_id IN ({issue_placeholders})
                 ORDER BY c.category_id, p.product_name
             """
             
