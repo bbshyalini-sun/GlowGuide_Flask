@@ -189,32 +189,29 @@ elif st.session_state.active_view == "Results":
         try:
             conn = get_db_connection()
             
-            # Map issues safely to integers to prevent data type mismatches
-            issue_ids = [int(x) for x in st.session_state.tracked_skin_issues]
-            skin_type_id = int(st.session_state.tracked_skin_type)
+            # Ensure all values are converted to integers to align perfectly with the database schema
+            target_skin_type = int(st.session_state.tracked_skin_type)
+            target_issues = [int(issue) for issue in st.session_state.tracked_skin_issues]
             
-            issue_placeholders = ",".join("?" * len(issue_ids))
+            # Create standard dynamic binding placeholders (?, ?, ...)
+            issue_placeholders = ",".join("?" * len(target_issues))
             
-            # IMPROVED QUERY LOGIC: Segregates table joins into an independent 
-            # sub-selection block to guarantee matching entries are caught cleanly.
+            # STEP-BY-STEP FILTERING ENGINE:
+            # 1. Selects base products grouped by category_name
+            # 2. Filters through product_skin_type relationship mapping
+            # 3. Filters again through product_skin_issue relationship mapping
             query = f"""
-                SELECT p.product_id, p.product_name, c.category_name
+                SELECT DISTINCT p.product_id, p.product_name, c.category_name
                 FROM product p
                 JOIN category c ON p.category_id = c.category_id
-                WHERE p.product_id IN (
-                    SELECT pst.product_id 
-                    FROM product_skin_type pst
-                    WHERE pst.skin_type_id = ?
-                )
-                AND p.product_id IN (
-                    SELECT psi.product_id 
-                    FROM product_skin_issue psi
-                    WHERE psi.issue_id IN ({issue_placeholders})
-                )
+                JOIN product_skin_type pst ON p.product_id = pst.product_id
+                JOIN product_skin_issue psi ON p.product_id = psi.product_id
+                WHERE pst.skin_type_id = ? 
+                  AND psi.issue_id IN ({issue_placeholders})
                 ORDER BY c.category_id, p.product_name
             """
             
-            execution_params = [skin_type_id] + issue_ids
+            execution_params = [target_skin_type] + target_issues
             matched_records = conn.execute(query, execution_params).fetchall()
             conn.close()
             
