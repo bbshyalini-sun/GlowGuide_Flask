@@ -112,7 +112,7 @@ if st.session_state.active_view == "Home":
         GlowGuide filters inventory schemas to provide matching, highly target-aligned products.
     """)
     st.write("---")
-    if st.button("Begin Free Profile Assessment ➔", use_container_width=True, type="primary"):
+    if f := st.button("Begin Free Profile Assessment ➔", use_container_width=True, type="primary"):
         st.session_state.active_view = "Assessment"
         st.rerun()
 
@@ -188,18 +188,10 @@ elif st.session_state.active_view == "Results":
     else:
         try:
             conn = get_db_connection()
+            issue_placeholders = ",".join("?" * len(st.session_state.tracked_skin_issues))
             
-            # Ensure all values are converted to integers to align perfectly with the database schema
-            target_skin_type = int(st.session_state.tracked_skin_type)
-            target_issues = [int(issue) for issue in st.session_state.tracked_skin_issues]
-            
-            # Create standard dynamic binding placeholders (?, ?, ...)
-            issue_placeholders = ",".join("?" * len(target_issues))
-            
-            # STEP-BY-STEP FILTERING ENGINE:
-            # 1. Selects base products grouped by category_name
-            # 2. Filters through product_skin_type relationship mapping
-            # 3. Filters again through product_skin_issue relationship mapping
+            # FIXED QUERY: First selects from product/category, then filters out non-matching 
+            # product_skin_types, and matches any of the targeted skin issues without strict cross-elimination.
             query = f"""
                 SELECT DISTINCT p.product_id, p.product_name, c.category_name
                 FROM product p
@@ -211,7 +203,7 @@ elif st.session_state.active_view == "Results":
                 ORDER BY c.category_id, p.product_name
             """
             
-            execution_params = [target_skin_type] + target_issues
+            execution_params = [st.session_state.tracked_skin_type] + st.session_state.tracked_skin_issues
             matched_records = conn.execute(query, execution_params).fetchall()
             conn.close()
             
