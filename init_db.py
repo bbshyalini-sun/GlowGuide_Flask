@@ -1,94 +1,124 @@
 import os
-import re
 import sqlite3
+import re
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "skincare.db")
-SQL_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
-
-def clean_mysql_for_sqlite(sql_text):
-    """Aggressively strips MySQL-specific syntax to make it 100% SQLite compliant."""
-    # 1. Remove standard MySQL comments and metadata headers
-    sql_text = re.sub(r'/\*!.*?\*/;', '', sql_text)
-    sql_text = re.sub(r'/\*!.*?\*/', '', sql_text)
-    sql_text = re.sub(r'--.*?\n', '\n', sql_text)
-    
-    # 2. Convert Auto-Increment safely
-    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
-    
-    # 3. Strip out table trailing options (ENGINE, CHARSET, COLLATE, etc.)
-    # This targets characters from the closing parenthese ) to the ending semicolon ;
-    sql_text = re.sub(r'\)\s*ENGINE\s*=\s*\w+[^;]*;', ');', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'COLLATE\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'DEFAULT\s+CHARSET\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'CHARACTER\s+SET\s+.\w+', '', sql_text, flags=re.IGNORECASE)
-    
-    # 4. Remove unsupported MySQL data definitions completely
-    sql_text = re.sub(r'LOCK TABLES.*?;', '', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'UNLOCK TABLES\s*;', '', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'SET\s+.*?;', '', sql_text, flags=re.IGNORECASE)
-    
-    # 5. Swap backticks for standard quotes
-    sql_text = sql_text.replace('`', '"')
-    
-    # 6. Clean up empty lines or stranded semicolons that cause syntax failures
-    sql_text = "\n".join([line for line in sql_text.splitlines() if line.strip()])
-    
-    return sql_text
+SQL_FILE_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
 
 def init_database_with_real_data():
-    print("🚀 Initializing defensive database construction engine...")
+    print("🚀 Starting native SQLite compilation from SQL dump...")
     
-    # Wipe out any corrupt historical DB file attempts
-    if os.path.exists(DB_PATH):
+    # 1. Establish connection and enforce foreign keys
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON;")
+    
+    # Drop all old tables to clear corrupted cache schemas
+    tables = [
+        "product_ingredient", "product_skin_issue", "product_skin_type", 
+        "product", "category", "ingredient", "skin_issue", "skin_type"
+    ]
+    for table in tables:
+        cursor.execute(f"DROP TABLE IF EXISTS {table};")
+        
+    # 2. Re-create structured SQLite schemas with constraints built-in directly
+    cursor.execute("""
+        CREATE TABLE category (
+            category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category_name VARCHAR(50) NOT NULL
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE skin_type (
+            skin_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            skin_type_name VARCHAR(50) NOT NULL
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE skin_issue (
+            issue_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            issue_name VARCHAR(100) NOT NULL
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE ingredient (
+            ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ingredient_name VARCHAR(100) NOT NULL,
+            description TEXT
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE product (
+            product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_name VARCHAR(255) NOT NULL,
+            category_id INTEGER NOT NULL,
+            description TEXT,
+            FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE product_ingredient (
+            product_id INTEGER NOT NULL,
+            ingredient_id INTEGER NOT NULL,
+            PRIMARY KEY (product_id, ingredient_id),
+            FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
+            FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id) ON DELETE CASCADE
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE product_skin_type (
+            product_id INTEGER NOT NULL,
+            skin_type_id INTEGER NOT NULL,
+            PRIMARY KEY (product_id, skin_type_id),
+            FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
+            FOREIGN KEY (skin_type_id) REFERENCES skin_type(skin_type_id) ON DELETE CASCADE
+        );
+    """)
+    
+    cursor.execute("""
+        CREATE TABLE product_skin_issue (
+            product_id INTEGER NOT NULL,
+            issue_id INTEGER NOT NULL,
+            PRIMARY KEY (product_id, issue_id),
+            FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE,
+            FOREIGN KEY (issue_id) REFERENCES skin_issue(issue_id) ON DELETE CASCADE
+        );
+    """)
+    
+    # 3. Read, Sanitize, and Stream the MySQL inserts safely
+    if not os.path.exists(SQL_FILE_PATH):
+        print(f"❌ Error: Source file '{SQL_FILE_PATH}' not found in directory.")
+        return
+        
+    with open(SQL_FILE_PATH, 'r', encoding='utf-8') as file:
+        raw_sql = file.read()
+        
+    # CRITICAL DIALECT CONVERSION: Translate MySQL escapes (\') into SQLite escapes ('')
+    # This keeps brands like L'Oréal from throwing syntax errors!
+    sanitized_sql = raw_sql.replace("\\'", "''")
+    
+    # Isolate all standard multi-line INSERT queries
+    insert_statements = re.findall(r"INSERT INTO `?\w+`?.*?;", sanitized_sql, re.DOTALL)
+    print(f"[+] Extracted {len(insert_statements)} INSERT sequences. Syncing data registries...")
+    
+    success_count = 0
+    for stmt in insert_statements:
         try:
-            os.remove(DB_PATH)
-        except Exception:
-            pass
-
-    if not os.path.exists(SQL_PATH):
-        print(f"❌ Error: Cannot find backup file at {SQL_PATH}")
-        return False
-
-    try:
-        with open(SQL_PATH, 'r', encoding='utf-8') as sql_file:
-            raw_script = sql_file.read()
-
-        # Run the deep text sanitizer
-        cleaned_script = clean_mysql_for_sqlite(raw_script)
-
-        # Connect and execute individual blocks to prevent full file rollback failures
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        
-        # Split statements cleanly by semicolon to execute them safely one by one
-        statements = cleaned_script.split(';')
-        for statement in statements:
-            clean_statement = statement.strip()
-            if clean_statement:
-                try:
-                    cursor.execute(clean_statement)
-                except sqlite3.OperationalError as statement_err:
-                    # Log problematic statements instead of crashing the whole process
-                    print(f"⚠️ Skipped incompatible command line: {statement_err}")
-                    continue
-                    
-        conn.commit()
-        
-        # Verify if the skin_type table actually got built
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_type'")
-        success = cursor.fetchone() is not None
-        
-        if success:
-            print("✅ Database tables successfully built and populated!")
-        else:
-            print("❌ Failure: Script finished, but 'skin_type' table still doesn't exist.")
+            cursor.execute(stmt)
+            success_count += 1
+        except Exception as ex:
+            print(f"[-] Statement skipped: {ex} | Near text: {stmt[:60]}")
             
-        conn.close()
-        return success
-    except Exception as e:
-        print(f"❌ Critical parser exception encountered: {e}")
-        return False
+    conn.commit()
+    conn.close()
+    print(f"🎉 SUCCESS: Database compilation finished! {success_count} structural blocks applied to 'skincare.db'!")
 
 if __name__ == "__main__":
     init_database_with_real_data()
