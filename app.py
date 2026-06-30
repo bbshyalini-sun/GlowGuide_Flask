@@ -12,7 +12,7 @@ st.markdown("""
     <style>
     .cat-title-header { font-size: 24px; font-weight: bold; color: #2E5A36; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px; margin-top: 30px; margin-bottom: 15px; }
     .product-display-card { background-color: #F8FAFC; padding: 18px; border-radius: 10px; border-left: 5px solid #2E5A36; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .product-main-title { font-size: 19px; color: #1E293B; margin: 4px 0 8px 0; font-weight: 600; }
+    .product-main-title { font-size: 19px; color: #1E293B; margin: 4px 0 4px 0; font-weight: 600; }
     
     /* Align sidebar menu buttons uniformly to the left */
     div[data-testid="stSidebar"] button {
@@ -190,9 +190,9 @@ elif st.session_state.active_view == "Results":
             conn = get_db_connection()
             issue_placeholders = ",".join("?" * len(st.session_state.tracked_skin_issues))
             
-            # FIXED: Removed p.brand column query field to perfectly match your database schema
+            # FIXED: Removed p.product_url column selection to perfectly align with your product table properties
             query = f"""
-                SELECT DISTINCT p.product_id, p.product_name, p.product_url, c.category_name
+                SELECT DISTINCT p.product_id, p.product_name, c.category_name
                 FROM product p
                 JOIN product_skin_type pst ON p.product_id = pst.product_id
                 JOIN product_skin_issue psi ON p.product_id = psi.product_id
@@ -220,15 +220,12 @@ elif st.session_state.active_view == "Results":
                     for _, item_row in category_rows.iterrows():
                         export_accumulator.append({
                             "Category": item_row['category_name'],
-                            "Product Name": item_row['product_name'],
-                            "Source URL": item_row['product_url'] if item_row['product_url'] else "N/A"
+                            "Product Name": item_row['product_name']
                         })
                         
-                        url_binding_html = f"<a href='{item_row['product_url']}' target='_blank' style='color:#2E5A36; font-weight:bold;'>View Formulation Source</a>" if item_row['product_url'] else ""
                         st.markdown(f"""
                             <div class="product-display-card">
                                 <div class="product-main-title">{item_row['product_name']}</div>
-                                {url_binding_html}
                             </div>
                         """, unsafe_allow_html=True)
                 
