@@ -41,22 +41,31 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Ensure schema consistency across platforms 
+# Ensure schema consistency across platforms by forcing database initialization
 def verify_underlying_matrix():
     try:
+        import init_db
+        # If file doesn't exist, build it
         if not os.path.exists(DB_PATH):
-            import init_db
             init_db.init_database_with_real_data()
         else:
+            # If file exists, check if tables have 0 rows. If empty, force-seed it.
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
-            c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_issue'")
-            if not c.fetchone():
-                import init_db
+            c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_type'")
+            has_table = c.fetchone()
+            
+            if not has_table:
+                conn.close()
                 init_db.init_database_with_real_data()
-            conn.close()
-    except Exception:
-        pass
+            else:
+                c.execute("SELECT COUNT(*) FROM skin_type")
+                row_count = c.fetchone()[0]
+                conn.close()
+                if row_count == 0:
+                    init_db.init_database_with_real_data()
+    except Exception as e:
+        st.warning(f"Database Initialization Warning: {e}")
 
 verify_underlying_matrix()
 
