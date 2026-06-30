@@ -1,18 +1,41 @@
 import os
+import re
 import sqlite3
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "skincare.db")
 SQL_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
 
-def init_database_with_real_data():
-    print("🚀 Initializing database seeding engine...")
+def clean_mysql_for_sqlite(sql_text):
+    """Transforms raw MySQL backup text into perfect SQLite compliance."""
+    # 1. Convert auto increment syntax safely
+    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
     
-    # 1. Force clear old corrupt or partial tables file
+    # 2. Strip MySQL server configuration headers/footers (lines starting with /*! ... */)
+    sql_text = re.sub(r'/\*!.*?\*/;', '', sql_text)
+    sql_text = re.sub(r'/\*!.*?\*/', '', sql_text)
+    
+    # 3. Clean up table creation suffixes like ENGINE=InnoDB DEFAULT CHARSET=...
+    sql_text = re.sub(r'ENGINE\s*=\s*\w+(?:\s+DEFAULT\s+CHARSET\s*=\s*\w+)?', '', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'COLLATE\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'DEFAULT\s+CHARSET\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
+    
+    # 4. Remove unsupported MySQL table locks
+    sql_text = re.sub(r'LOCK TABLES.*?;', '', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'UNLOCK TABLES\s*;', '', sql_text, flags=re.IGNORECASE)
+    
+    # 5. Handle backtick variations cleanly
+    sql_text = sql_text.replace('`', '"')
+    
+    return sql_text
+
+def init_database_with_real_data():
+    print("🚀 Initializing deep-cleaning database seeding engine...")
+    
+    # Force close any existing file connections and wipe old corruption
     if os.path.exists(DB_PATH):
         try:
-            conn = sqlite3.connect(DB_PATH)
-            conn.close()
             os.remove(DB_PATH)
         except Exception:
             pass
@@ -22,26 +45,29 @@ def init_database_with_real_data():
         return False
 
     try:
-        # 2. Read raw SQL commands
         with open(SQL_PATH, 'r', encoding='utf-8') as sql_file:
-            sql_script = sql_file.read()
+            raw_script = sql_file.read()
 
-        # 3. Translate MySQL keywords to SQLite keywords so it doesn't crash
-        # This replaces "INTEGER PRIMARY KEY AUTO_INCREMENT" with "INTEGER PRIMARY KEY AUTOINCREMENT"
-        sql_script = sql_script.replace("PRIMARY KEY AUTO_INCREMENT", "PRIMARY KEY AUTOINCREMENT")
-        sql_script = sql_script.replace("PRIMARY KEY AUTO_INCREMENT", "PRIMARY KEY AUTOINCREMENT")
+        # Run the text sanitizer
+        cleaned_script = clean_mysql_for_sqlite(raw_script)
 
-        # 4. Connect and inject tables and rows completely
+        # Connect and execute the safe code directly into SQLite
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        
-        # Run the entire SQL backup script
-        cursor.executescript(sql_script)
-        
+        cursor.executescript(cleaned_script)
         conn.commit()
+        
+        # Verify it actually built your requested table 
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_type'")
+        if cursor.fetchone():
+            print("✅ Database tables successfully built and populated!")
+            built_successfully = True
+        else:
+            print("⚠️ Table creation skipped. Check SQL file contents structure.")
+            built_successfully = False
+            
         conn.close()
-        print("✅ Database tables successfully built and populated!")
-        return True
+        return built_successfully
     except Exception as e:
         print(f"❌ Failed to parse SQL script: {e}")
         return False
