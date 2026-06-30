@@ -939,7 +939,7 @@ ALTER TABLE `product_ingredient`
   ADD CONSTRAINT `product_ingredient_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `product_ingredient_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredient` (`ingredient_id`) ON DELETE CASCADE;
 
---
+
 -- Constraints for table `product_skin_issue`
 --
 ALTER TABLE `product_skin_issue`
