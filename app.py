@@ -139,16 +139,34 @@ elif st.session_state.active_view == "Assessment":
     st.markdown("Select your structural skin criteria below to filter the engine registry rules.")
     st.write("---")
 
-    # 1. Single Dropdown Selection for Skin Typology
+    # STRICT DIRECT DATABASE CONNECTIONS (No hardcoded fallbacks)
+    try:
+        conn = get_db_connection()
+        db_types = conn.execute("SELECT skin_type_id, skin_type_name FROM skin_type").fetchall()
+        db_issues = conn.execute("SELECT issue_id, issue_name FROM skin_issue").fetchall()
+        conn.close()
+        
+        # Build strict dictionary maps directly from the active SQL rows
+        SKIN_TYPES_MAP = {row["skin_type_id"]: row["skin_type_name"] for row in db_types}
+        SKIN_ISSUES_MAP = {row["issue_id"]: row["issue_name"] for row in db_issues}
+    except Exception as db_err:
+        st.error(f"❌ Critical Database Mapping Error: Could not extract live tables. Matrix Details: {db_err}")
+        st.stop()
+
+    # Fallback validation to ensure tables aren't completely empty files
+    if not SKIN_TYPES_MAP or not SKIN_ISSUES_MAP:
+        st.error("❌ Database Connection Succeeded, but your 'skin_type' or 'skin_issue' tables contain 0 rows.")
+        st.stop()
+
+    # 1. Single Dropdown Selection for Skin Typology (Reads directly from skin_type table)
     selected_type_id = st.selectbox(
         "1. Select Your Biological Skin Typology (Single Choice Dropdown):",
         options=list(SKIN_TYPES_MAP.keys()),
-        index=list(SKIN_TYPES_MAP.keys()).index(st.session_state.tracked_skin_type) if st.session_state.tracked_skin_type in SKIN_TYPES_MAP else 0,
         format_func=lambda x: SKIN_TYPES_MAP[x]
     )
     st.session_state.tracked_skin_type = selected_type_id
 
-    # 2. Multi-Select Elements Matrix For Overlapping Concerns
+    # 2. Multi-Select Elements Matrix For Overlapping Concerns (Reads directly from skin_issue table)
     selected_issue_ids = st.multiselect(
         "2. Select Your Target Matrix Conditions (Multiple Selection Checklist):",
         options=list(SKIN_ISSUES_MAP.keys()),
