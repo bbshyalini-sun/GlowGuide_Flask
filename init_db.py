@@ -6,36 +6,41 @@ DB_PATH = os.path.join(BASE_DIR, "skincare.db")
 SQL_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
 
 def init_database_with_real_data():
-    """Reads the raw backup .sql file and writes its tables and rows into skincare.db"""
     print("🚀 Initializing database seeding engine...")
     
-    # 1. Clear out an empty or corrupted database file if it exists
+    # 1. Force clear old corrupt or partial tables file
     if os.path.exists(DB_PATH):
         try:
+            conn = sqlite3.connect(DB_PATH)
+            conn.close()
             os.remove(DB_PATH)
         except Exception:
             pass
 
-    # 2. Check if the raw sql script is missing
     if not os.path.exists(SQL_PATH):
         print(f"❌ Error: Cannot find backup file at {SQL_PATH}")
         return False
 
     try:
-        # 3. Read raw SQL commands
+        # 2. Read raw SQL commands
         with open(SQL_PATH, 'r', encoding='utf-8') as sql_file:
             sql_script = sql_file.read()
 
-        # 4. Open connection and execute script commands to seed rows
+        # 3. Translate MySQL keywords to SQLite keywords so it doesn't crash
+        # This replaces "INTEGER PRIMARY KEY AUTO_INCREMENT" with "INTEGER PRIMARY KEY AUTOINCREMENT"
+        sql_script = sql_script.replace("PRIMARY KEY AUTO_INCREMENT", "PRIMARY KEY AUTOINCREMENT")
+        sql_script = sql_script.replace("PRIMARY KEY AUTO_INCREMENT", "PRIMARY KEY AUTOINCREMENT")
+
+        # 4. Connect and inject tables and rows completely
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
-        # Execute script containing table creations and inserts
+        # Run the entire SQL backup script
         cursor.executescript(sql_script)
         
         conn.commit()
         conn.close()
-        print("✅ Database successfully populated with your tables and rows!")
+        print("✅ Database tables successfully built and populated!")
         return True
     except Exception as e:
         print(f"❌ Failed to parse SQL script: {e}")
