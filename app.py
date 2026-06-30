@@ -40,6 +40,7 @@ def get_db_connection():
     return conn
 
 # Force active database auto-population on platform boot
+# Force active database auto-population on platform boot
 def verify_underlying_matrix():
     try:
         import init_db
@@ -48,13 +49,14 @@ def verify_underlying_matrix():
         else:
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
-            c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_type'")
+            # CHANGE: Check for actual products inside the database matrix
+            c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='product'")
             has_table = c.fetchone()
             if not has_table:
                 conn.close()
                 init_db.init_database_with_real_data()
             else:
-                c.execute("SELECT COUNT(*) FROM skin_type")
+                c.execute("SELECT COUNT(*) FROM product")
                 if c.fetchone()[0] == 0:
                     conn.close()
                     init_db.init_database_with_real_data()
