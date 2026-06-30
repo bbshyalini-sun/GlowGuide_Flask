@@ -3,24 +3,44 @@ import sqlite3
 import pandas as pd
 import streamlit as st
 
-# ==========================================
-# 1. SETUP & CONFIGURATION
-# ==========================================
-st.set_page_config(page_title="GlowGuide | Skincare Engine", page_icon="✨", layout="centered")
+# 1. PAGE SETUP & STYLING
+st.set_page_config(
+    page_title="Skinalyze | Precision Skincare Engine",
+    page_icon="🌿",
+    layout="centered"
+)
 
-# Custom CSS for Print Mode and Styling
+# Custom injection for professional typography and Clean Print (Ctrl+P / Cmd+P) mapping
 st.markdown("""
     <style>
-    .cat-header { font-size: 24px; font-weight: bold; color: #2C3E50; border-bottom: 2px solid #3498DB; margin-top: 30px; padding-bottom: 5px; }
-    .product-box { background-color: #F8F9F9; padding: 15px; border-radius: 8px; border-left: 5px solid #3498DB; margin-bottom: 15px; }
-    .brand-text { font-size: 12px; color: #7F8C8D; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
-    .prod-name { font-size: 18px; color: #2C3E50; margin: 5px 0; font-weight: 600; }
-    
-    /* Print Styles */
+    .category-header {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2E5A36;
+        border-bottom: 2px solid #E0E0E0;
+        padding-bottom: 5px;
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+    .product-card {
+        background-color: #F9FBF9;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #2E5A36;
+        margin-bottom: 12px;
+    }
+    /* Native Print View Configuration */
     @media print {
-        header, footer, .stButton, .stDownloadButton, [data-testid="stSidebar"] { display: none !important; }
-        .main .block-container { padding-top: 0rem !important; }
-        body { background-color: white !important; }
+        header, footer, .stButton, [data-testid="stSidebar"], [data-testid="stHeader"] {
+            display: none !important;
+        }
+        .main .block-container {
+            padding-top: 0rem !important;
+        }
+        body {
+            color: #000000 !important;
+            background-color: #FFFFFF !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -28,157 +48,140 @@ st.markdown("""
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "skincare.db")
 
-# Initialize Session State for Page Routing
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = "Home"
-if 'user_type' not in st.session_state:
-    st.session_state.user_type = None
-if 'user_issues' not in st.session_state:
-    st.session_state.user_issues = []
+# 2. AUTO DATABASE BOOTSTRAPPING FOR STREAMLIT CLOUD
+def verify_database():
+    """Ensures database tables are seeded from the SQL dump if missing."""
+    if not os.path.exists(DB_PATH):
+        st.warning("Database file missing. Attempting restoration from configuration setup...")
+        try:
+            import init_db
+            # Force target parsing to latest dump file state if found
+            for dump_version in ["skincare_system (4).sql", "skincare_system (3).sql", "skincare_system (2).sql"]:
+                if os.path.exists(os.path.join(BASE_DIR, dump_version)):
+                    init_db.SQL_FILE_NAME = dump_version
+                    break
+            init_db.init_database_with_real_data()
+            st.success("Database compiled successfully!")
+        except Exception as e:
+            st.error(f"Failed to compile database sequence: {e}")
 
-# Database Connection Helper
+verify_database()
+
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-# Fetch Data for Dropdowns
-def fetch_options(table, id_col, name_col):
+# 3. COMPILING DIAGNOSTIC VARIABLES
+try:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Extract structural selection data
+    skin_types = cursor.execute("SELECT skin_type_id, skin_type_name FROM skin_type").fetchall()
+    skin_issues = cursor.execute("SELECT issue_id, issue_name FROM skin_issue").fetchall()
+    categories = cursor.execute("SELECT category_id, category_name FROM category ORDER BY category_id").fetchall()
+    
+    conn.close()
+except Exception as e:
+    st.error("Critical System Interruption: Failed to map metadata tables.")
+    st.stop()
+
+# 4. UI RENDER SEQUENCE
+st.title("🌿 Skinalyze Routine Matrix")
+st.markdown("Select your biological parameters below to calculate a targeted rule-based product recommendation regime.")
+
+# Input Layout Fields
+col1, col2 = st.columns(2)
+with col1:
+    selected_type_id = st.selectbox(
+        "1. Biological Skin Typology",
+        options=[st['skin_type_id'] for st in skin_types],
+        format_func=lambda x: next(st['skin_type_name'] for st in skin_types if st['skin_type_id'] == x)
+    )
+
+with col2:
+    selected_issue_id = st.selectbox(
+        "2. Primary Matrix Condition",
+        options=[si['issue_id'] for si in skin_issues],
+        format_func=lambda x: next(si['issue_name'] for si in skin_issues if si['issue_id'] == x)
+    )
+
+# 5. RECOMMENDATION COMPUTATION ENGINE (Rule-Based Algorithm)
+if st.button("Generate Recommendation Profile", use_container_width=True):
     try:
         conn = get_db_connection()
-        data = conn.execute(f"SELECT {id_col}, {name_col} FROM {table}").fetchall()
+        cursor = conn.cursor()
+        
+        # Rule Execution: Query intersections for matching skin profiles
+        query = """
+            SELECT DISTINCT 
+                p.product_id,
+                p.product_name,
+                p.brand,
+                p.category_id,
+                p.image_url,
+                p.product_url
+            FROM product p
+            JOIN product_skin_type pst ON p.product_id = pst.product_id
+            JOIN product_skin_issue psi ON p.product_id = psi.product_id
+            WHERE pst.skin_type_id = ? AND psi.issue_id = ?
+        """
+        results = cursor.execute(query, (selected_type_id, selected_issue_id)).fetchall()
         conn.close()
-        return [{"id": row[id_col], "name": row[name_col]} for row in data]
-    except Exception:
-        return []
-
-# ==========================================
-# 2. PAGE 1: HOMEPAGE
-# ==========================================
-if st.session_state.current_page == "Home":
-    st.title("✨ Welcome to GlowGuide")
-    st.markdown("""
-        **Discover your perfect skincare routine.**
         
-        Our rule-based recommendation engine analyzes your unique biological skin type and specific concerns to curate a list of scientifically-backed products tailored just for you.
-    """)
-    st.write("---")
-    
-    # Navigation Button
-    if st.button("Start My Diagnostic ➔", use_container_width=True, type="primary"):
-        st.session_state.current_page = "Assessment"
-        st.rerun()
-
-# ==========================================
-# 3. PAGE 2: ASSESSMENT (Inputs)
-# ==========================================
-elif st.session_state.current_page == "Assessment":
-    st.title("📋 Skin Assessment")
-    st.markdown("Please fill out your skin profile below to filter our product database.")
-
-    skin_types = fetch_options("skin_type", "skin_type_id", "skin_type_name")
-    skin_issues = fetch_options("skin_issue", "issue_id", "issue_name")
-
-    # Input 1: Single Dropdown for Skin Type
-    selected_type = st.selectbox(
-        "1. What is your primary Skin Type? (Select One)",
-        options=[t["id"] for t in skin_types],
-        format_func=lambda x: next(t["name"] for t in skin_types if t["id"] == x)
-    )
-
-    # Input 2: Multiple Choice for Skin Issues
-    selected_issues = st.multiselect(
-        "2. What are your main Skin Concerns? (Select as many as apply)",
-        options=[i["id"] for i in skin_issues],
-        format_func=lambda x: next(i["name"] for i in skin_issues if i["id"] == x)
-    )
-
-    st.write("---")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("⬅ Back to Home", use_container_width=True):
-            st.session_state.current_page = "Home"
-            st.rerun()
-    with col2:
-        if st.button("Find My Routine ➔", use_container_width=True, type="primary"):
-            if not selected_issues:
-                st.warning("Please select at least one skin concern to proceed.")
-            else:
-                # Save to session and move to next page
-                st.session_state.user_type = selected_type
-                st.session_state.user_issues = selected_issues
-                st.session_state.current_page = "Results"
-                st.rerun()
-
-# ==========================================
-# 4. PAGE 3: RESULTS & EXPORT
-# ==========================================
-elif st.session_state.current_page == "Results":
-    st.title("🛒 Your Recommended Routine")
-    st.markdown("Based on your assessment, here are the products filtered specifically for your skin.")
-    
-    # Run the filtering algorithm
-    conn = get_db_connection()
-    
-    # SQL Dynamic Query: Must match the ONE skin type, and AT LEAST ONE of the multiple issues
-    placeholders = ",".join("?" * len(st.session_state.user_issues))
-    query = f"""
-        SELECT DISTINCT p.product_name, p.brand, p.product_url, c.category_name
-        FROM product p
-        JOIN product_skin_type pst ON p.product_id = pst.product_id
-        JOIN product_skin_issue psi ON p.product_id = psi.product_id
-        JOIN category c ON p.category_id = c.category_id
-        WHERE pst.skin_type_id = ? 
-        AND psi.issue_id IN ({placeholders})
-        ORDER BY c.category_id
-    """
-    
-    params = [st.session_state.user_type] + st.session_state.user_issues
-    results = conn.execute(query, params).fetchall()
-    conn.close()
-
-    if not results:
-        st.info("No products currently match this exact combination in our database.")
-    else:
-        # Group products dynamically by their category
-        report_data = []
-        df_results = pd.DataFrame([dict(row) for row in results])
-        grouped = df_results.groupby('category_name')
-        
-        for category, group in grouped:
-            st.markdown(f'<div class="cat-header">{category}</div>', unsafe_allow_html=True)
+        if not results:
+            st.info("No matching structural products mapped to this configuration profile inside the inventory database yet.")
+        else:
+            st.success(f"Algorithm processing complete. Found {len(results)} matching formulas across internal registries.")
             
-            for _, row in group.iterrows():
-                report_data.append(row.to_dict())
+            # Metadata preparation for Export Files
+            report_data = []
+            
+            # Map items out dynamically grouped by target Category IDs
+            for cat in categories:
+                cat_products = [p for p in results if p['category_id'] == cat['category_id']]
                 
-                url_html = f"<a href='{row['product_url']}' target='_blank'>View Product</a>" if row['product_url'] else ""
-                st.markdown(f"""
-                    <div class="product-box">
-                        <div class="brand-text">{row['brand'] or 'Generic'}</div>
-                        <div class="prod-name">{row['product_name']}</div>
-                        {url_html}
-                    </div>
-                """, unsafe_allow_html=True)
-
-        st.markdown("---")
-        st.subheader("🖨️ Export & Print")
-        
-        # Action 1: Print via Browser (CSS handles layout)
-        st.info("💡 **To Print or Save to PDF:** Press **Ctrl + P** (Windows) or **Cmd + P** (Mac). The layout will automatically format into a clean document.")
-        
-        # Action 2: Download CSV File
-        csv = pd.DataFrame(report_data).to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📥 Download Full List as CSV",
-            data=csv,
-            file_name="glowguide_recommendations.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
-
-    st.write("---")
-    if st.button("↺ Retake Assessment", use_container_width=True):
-        st.session_state.current_page = "Assessment"
-        st.session_state.user_issues = []
-        st.rerun()
+                if cat_products:
+                    st.markdown(f'<div class="category-header">{cat["category_name"]}</div>', unsafe_allow_html=True)
+                    
+                    for prod in cat_products:
+                        # Append raw entry list details to file collection tracker
+                        report_data.append({
+                            "Category": cat['category_name'],
+                            "Brand": prod['brand'],
+                            "Product Name": prod['product_name'],
+                            "Resource URL": prod['product_url'] if prod['product_url'] else "N/A"
+                        })
+                        
+                        # Generate targeted front-end markdown content cards
+                        with st.container():
+                            st.markdown(f"""
+                                <div class="product-card">
+                                    <span style="color:#757575; font-size:12px; text-transform:uppercase; letter-spacing:1px;">{prod['brand']}</span>
+                                    <h4 style="margin: 2px 0 8px 0; color:#333;">{prod['product_name']}</h4>
+                                    {"<a href='" + prod['product_url'] + "' target='_blank' style='color:#2E5A36; font-size:14px; font-weight:bold;'>View Product Source</a>" if prod['product_url'] else ""}
+                                </div>
+                            """, unsafe_allow_html=True)
+            
+            # 6. EXPORT / UTILITY ACTIONS
+            st.markdown("---")
+            st.subheader("📋 Export & Print Options")
+            
+            # Action 1: File Generation Downloader
+            report_df = pd.DataFrame(report_data)
+            csv_payload = report_df.to_csv(index=False).encode('utf-8')
+            
+            st.download_button(
+                label="📥 Download Routine Report File (.CSV)",
+                data=csv_payload,
+                file_name="skinalyze_skincare_routine.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+            
+            # Action 2: Standard Browser Native Layout Guide
+            st.info("💡 **To Print or Save to PDF directly:** Simply hit **Ctrl + P** (or **Cmd + P** on Mac). The custom theme styling automatically formats the catalog list into a clean paper document invoice format!")
+            
+    except Exception as e:
+        st.error(f"Error executing recommendation rule algorithm: {e}")
