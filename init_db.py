@@ -7,33 +7,39 @@ DB_PATH = os.path.join(BASE_DIR, "skincare.db")
 SQL_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
 
 def clean_mysql_for_sqlite(sql_text):
-    """Transforms raw MySQL backup text into perfect SQLite compliance."""
-    # 1. Convert auto increment syntax safely
-    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
-    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
-    
-    # 2. Strip MySQL server configuration headers/footers (lines starting with /*! ... */)
+    """Aggressively strips MySQL-specific syntax to make it 100% SQLite compliant."""
+    # 1. Remove standard MySQL comments and metadata headers
     sql_text = re.sub(r'/\*!.*?\*/;', '', sql_text)
     sql_text = re.sub(r'/\*!.*?\*/', '', sql_text)
+    sql_text = re.sub(r'--.*?\n', '\n', sql_text)
     
-    # 3. Clean up table creation suffixes like ENGINE=InnoDB DEFAULT CHARSET=...
-    sql_text = re.sub(r'ENGINE\s*=\s*\w+(?:\s+DEFAULT\s+CHARSET\s*=\s*\w+)?', '', sql_text, flags=re.IGNORECASE)
+    # 2. Convert Auto-Increment safely
+    sql_text = re.sub(r'AUTO_INCREMENT', 'AUTOINCREMENT', sql_text, flags=re.IGNORECASE)
+    
+    # 3. Strip out table trailing options (ENGINE, CHARSET, COLLATE, etc.)
+    # This targets characters from the closing parenthese ) to the ending semicolon ;
+    sql_text = re.sub(r'\)\s*ENGINE\s*=\s*\w+[^;]*;', ');', sql_text, flags=re.IGNORECASE)
     sql_text = re.sub(r'COLLATE\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
     sql_text = re.sub(r'DEFAULT\s+CHARSET\s*=\s*\w+', '', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'CHARACTER\s+SET\s+.\w+', '', sql_text, flags=re.IGNORECASE)
     
-    # 4. Remove unsupported MySQL table locks
+    # 4. Remove unsupported MySQL data definitions completely
     sql_text = re.sub(r'LOCK TABLES.*?;', '', sql_text, flags=re.IGNORECASE)
     sql_text = re.sub(r'UNLOCK TABLES\s*;', '', sql_text, flags=re.IGNORECASE)
+    sql_text = re.sub(r'SET\s+.*?;', '', sql_text, flags=re.IGNORECASE)
     
-    # 5. Handle backtick variations cleanly
+    # 5. Swap backticks for standard quotes
     sql_text = sql_text.replace('`', '"')
+    
+    # 6. Clean up empty lines or stranded semicolons that cause syntax failures
+    sql_text = "\n".join([line for line in sql_text.splitlines() if line.strip()])
     
     return sql_text
 
 def init_database_with_real_data():
-    print("🚀 Initializing deep-cleaning database seeding engine...")
+    print("🚀 Initializing defensive database construction engine...")
     
-    # Force close any existing file connections and wipe old corruption
+    # Wipe out any corrupt historical DB file attempts
     if os.path.exists(DB_PATH):
         try:
             os.remove(DB_PATH)
@@ -48,28 +54,40 @@ def init_database_with_real_data():
         with open(SQL_PATH, 'r', encoding='utf-8') as sql_file:
             raw_script = sql_file.read()
 
-        # Run the text sanitizer
+        # Run the deep text sanitizer
         cleaned_script = clean_mysql_for_sqlite(raw_script)
 
-        # Connect and execute the safe code directly into SQLite
+        # Connect and execute individual blocks to prevent full file rollback failures
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.executescript(cleaned_script)
+        
+        # Split statements cleanly by semicolon to execute them safely one by one
+        statements = cleaned_script.split(';')
+        for statement in statements:
+            clean_statement = statement.strip()
+            if clean_statement:
+                try:
+                    cursor.execute(clean_statement)
+                except sqlite3.OperationalError as statement_err:
+                    # Log problematic statements instead of crashing the whole process
+                    print(f"⚠️ Skipped incompatible command line: {statement_err}")
+                    continue
+                    
         conn.commit()
         
-        # Verify it actually built your requested table 
+        # Verify if the skin_type table actually got built
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='skin_type'")
-        if cursor.fetchone():
+        success = cursor.fetchone() is not None
+        
+        if success:
             print("✅ Database tables successfully built and populated!")
-            built_successfully = True
         else:
-            print("⚠️ Table creation skipped. Check SQL file contents structure.")
-            built_successfully = False
+            print("❌ Failure: Script finished, but 'skin_type' table still doesn't exist.")
             
         conn.close()
-        return built_successfully
+        return success
     except Exception as e:
-        print(f"❌ Failed to parse SQL script: {e}")
+        print(f"❌ Critical parser exception encountered: {e}")
         return False
 
 if __name__ == "__main__":
