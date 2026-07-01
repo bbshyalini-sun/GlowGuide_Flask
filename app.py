@@ -24,14 +24,6 @@ st.markdown("""
         background-color: #F3F4F6;
     }
 
-    .top-logo-text {
-        color: #2E5A36;
-        font-weight: 800;
-        font-size: 1.5rem;
-        line-height: 2.5rem;
-        margin: 0;
-    }
-
     .top-dashboard-border {
         width: 100%;
         border-top: 4px solid #2E5A36;
@@ -177,10 +169,24 @@ with col1:
     if st.button("..."):
         st.session_state.view = 'home'
         st.rerun()
-with col2:
-    st.markdown('<h3 class="top-logo-text">Skinalyze</h3>', unsafe_allow_html=True)
 
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
+
+# Toggleable Sidebar Content
+if st.session_state.show_sidebar:
+    with st.sidebar:
+        st.title("Skinalyze")
+        
+        if st.button("Home", use_container_width=True):
+            st.session_state.view = 'home'
+            st.session_state.show_sidebar = False
+            st.rerun()
+            
+        if st.button("Skincare Info Guide", use_container_width=True):
+            pass # Placeholder for future functionality
+            
+        if st.button("History", use_container_width=True):
+            pass # Placeholder for future functionality
 
 # ==========================================
 # 4. DATABASE CONNECTION FUNCTION
@@ -204,9 +210,17 @@ if 'view' not in st.session_state:
     st.session_state.view = 'home'
 if 'recommendations' not in st.session_state:
     st.session_state.recommendations = pd.DataFrame()
+if 'show_sidebar' not in st.session_state:
+    st.session_state.show_sidebar = False
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = ""
+if 'current_skin_type_name' not in st.session_state:
+    st.session_state.current_skin_type_name = ""
+if 'current_skin_issue_name' not in st.session_state:
+    st.session_state.current_skin_issue_name = ""
 
 # ==========================================
-# 5. VIEWS (HOME / ASSESSMENT / RESULTS)
+# 6. VIEWS (HOME / ASSESSMENT / RESULTS)
 # ==========================================
 
 if st.session_state.view == 'home':
@@ -231,6 +245,9 @@ elif st.session_state.view == 'assessment':
         st.stop()
 
     with st.form("diagnostic_form"):
+        st.write("### Profile Name (Optional)")
+        user_name = st.text_input("Enter a name for this profile:")
+
         st.write("### 1. Primary Skin Type")
         selected_type = st.selectbox(
             "Identify baseline skin behavior:", 
@@ -251,6 +268,12 @@ elif st.session_state.view == 'assessment':
             if selected_type is None or selected_issue is None:
                 st.warning("Please select both your skin type and primary skin concern.")
                 st.stop()
+            
+            # Save the names for the results page display
+            st.session_state.user_name = user_name.strip() if user_name.strip() else "there"
+            st.session_state.current_skin_type_name = skin_types.loc[skin_types['skin_type_id'] == selected_type, 'skin_type_name'].values[0]
+            st.session_state.current_skin_issue_name = skin_issues.loc[skin_issues['issue_id'] == selected_issue, 'issue_name'].values[0]
+
             # 💡 THE SMART FALLBACK QUERY
             # Looks for exact matches, but if targeting Acne (1), allows Oil Control (3) overlap.
             query = """
@@ -278,6 +301,12 @@ elif st.session_state.view == 'assessment':
 
 elif st.session_state.view == 'results':
     st.title("✨ Your Matrix Routine")
+    results = st.session_state.recommendations
+
+    # Custom Greeting
+    st.markdown(f"**Hello {st.session_state.user_name}, here is the custom configuration targeted precisely for {st.session_state.current_skin_type_name} and {st.session_state.current_skin_issue_name}.**")
+    st.write("") # Add a little spacing
+    
     results = st.session_state.recommendations
     
     if results.empty:
