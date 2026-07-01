@@ -332,5 +332,5 @@ elif st.session_state.view == 'results':
     
     st.write("---")
     if st.button("↺ Restart Diagnostic", use_container_width=True):
-        st.session_state.view = 'home'
+        st.session_state.view = 'assessment'
         st.rerun()
