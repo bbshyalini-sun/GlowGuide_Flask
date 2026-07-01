@@ -91,14 +91,14 @@ elif st.session_state.view == 'assessment':
         st.write("### 1. Primary Skin Type")
         selected_type = st.selectbox(
             "Identify baseline skin behavior:", 
-            options=skin_types['skin_type_id'].tolist(),
+            options=[None] + skin_types['skin_type_id'].tolist(),
             format_func=lambda x: "Select your skin type" if x is None else skin_types.loc[skin_types['skin_type_id'] == x, 'skin_type_name'].values[0]
         )
         
         st.write("### 2. Primary Skin Concern")
         selected_issue = st.selectbox(
             "What is your main target for treatment?", 
-            options=skin_issues['issue_id'].tolist(),
+            options=[None] + skin_issues['issue_id'].tolist(),
             format_func=lambda x: "Select your primary skin concern" if x is None else skin_issues.loc[skin_issues['issue_id'] == x, 'issue_name'].values[0]
         )
         
