@@ -36,6 +36,23 @@ st.markdown("""
         box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
         color: white;
     }
+            
+                .stApp {
+        background-color: #FFFFFF;
+        color: #1E293B;
+    }
+
+    [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF;
+    }
+
+    [data-testid="stHeader"] {
+        background-color: rgba(255, 255, 255, 0);
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #F8FAFC;
+    }
     </style>
 """, unsafe_allow_html=True)
 
