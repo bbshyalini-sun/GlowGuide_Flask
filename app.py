@@ -226,15 +226,16 @@ if 'current_skin_issue_name' not in st.session_state:
 if st.session_state.view == 'home':
     st.markdown('<div class="main-header">Skinalyze</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Clinical Rule-Based Skincare Architecture</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Welcome to a smart rule-based skincare matching system! To get started, please press the button below to begin the skin assessment.</div>', unsafe_allow_html=True)
     
-    st.info("👋 **Welcome!** Our matrix compares cross-functional product parameters against your targeted biological properties to generate personalized routines.")
+    st.info("👋 **Disclaimer:** This website provides general information only and is not intended as medical advice. Please consult a dermatologist for personalized skincare recommendations.")
     
     if st.button("Start Skin Assessment ➔", use_container_width=True, type="primary"):
         st.session_state.view = 'assessment'
         st.rerun()
 
 elif st.session_state.view == 'assessment':
-    st.title("📋 Skin Diagnostic")
+    st.title("Skin Profiler")
     
     # Fetch dropdown options from DB
     try:
