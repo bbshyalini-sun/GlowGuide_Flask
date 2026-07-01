@@ -174,8 +174,6 @@ with col1:
         current_sidebar_state = st.session_state.get('show_sidebar', False)
         st.session_state.show_sidebar = not current_sidebar_state
         st.rerun()
-with col2:
-    st.markdown('<h2 class="top-logo-text">Skinalyze</h2>', unsafe_allow_html=True)
 
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
