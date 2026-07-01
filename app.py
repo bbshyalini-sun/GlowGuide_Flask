@@ -208,7 +208,73 @@ def fetch_data(query, params=()):
     conn = get_connection()
     return pd.read_sql_query(query, conn, params=params)
 
-
+# ==========================================
+# PDF GENERATION FUNCTION
+# ==========================================
+def generate_pdf(user_name, skin_type, skin_issue, results):
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+    import io
+    
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+    
+    # Title
+    p.setFont("Helvetica-Bold", 20)
+    p.setFillColorRGB(0.18, 0.35, 0.21) # #2E5A36
+    p.drawString(50, height - 50, "Skinalyze | Precision Matrix Routine")
+    
+    # Header Divider Line
+    p.setStrokeColorRGB(0.18, 0.35, 0.21)
+    p.setLineWidth(2)
+    p.line(50, height - 60, width - 50, height - 60)
+    
+    # Greeting Content
+    p.setFont("Helvetica", 11)
+    p.setFillColorRGB(0.07, 0.09, 0.15) # #111827
+    greeting_text = f"Hello {user_name}, here is your custom configuration targeted precisely for {skin_type} and {skin_issue}."
+    p.drawString(50, height - 90, greeting_text)
+    
+    y = height - 130
+    
+    if results.empty:
+        p.drawString(50, y, "No exact matches found for this specific combination.")
+    else:
+        categories = results['category_name'].unique()
+        for cat in categories:
+            if y < 100:
+                p.showPage()
+                y = height - 50
+                
+            p.setFont("Helvetica-Bold", 14)
+            p.setFillColorRGB(0.18, 0.35, 0.21)
+            p.drawString(50, y, f"{cat}")
+            y -= 20
+            
+            cat_products = results[results['category_name'] == cat].head(3)
+            for _, row in cat_products.iterrows():
+                if y < 80:
+                    p.showPage()
+                    y = height - 50
+                    
+                p.setFont("Helvetica-Bold", 11)
+                p.setFillColorRGB(0.07, 0.09, 0.15)
+                p.drawString(60, y, f"• {row['product_name']}")
+                y -= 15
+                
+                p.setFont("Helvetica", 10)
+                desc = row['description'] if pd.notna(row['description']) else "Clinical formulation."
+                if len(desc) > 85:
+                    desc = desc[:82] + "..."
+                p.drawString(72, y, desc)
+                y -= 25
+            y -= 10
+            
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer.getvalue()
 
 # ==========================================
 # 6. VIEWS (HOME / ASSESSMENT / RESULTS)
@@ -300,7 +366,25 @@ elif st.session_state.view == 'results':
     st.markdown(f"**Hello {st.session_state.user_name}, here is the custom configuration targeted precisely for {st.session_state.current_skin_type_name} and {st.session_state.current_skin_issue_name}.**")
     st.write("") # Add a little spacing
     
-    results = st.session_state.recommendations
+    # Export to PDF Button
+    try:
+        pdf_bytes = generate_pdf(
+            st.session_state.user_name,
+            st.session_state.current_skin_type_name,
+            st.session_state.current_skin_issue_name,
+            results
+        )
+        st.download_button(
+            label="📥 Export Routine to PDF",
+            data=pdf_bytes,
+            file_name=f"skinalyze_routine_{st.session_state.user_name}.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+    except Exception as e:
+        st.error(f"Error generating PDF utility: {e}")
+        
+    st.write("") # Spacing container
     
     if results.empty:
         st.warning("⚠️ No exact matches found for this specific combination. Try broadening your criteria.")
