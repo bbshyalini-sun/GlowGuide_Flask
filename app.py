@@ -15,6 +15,25 @@ st.markdown("""
     .product-card { background-color: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 6px solid #2E5A36; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     .product-title { font-size: 20px; color: #1E293B; font-weight: 700; margin: 0 0 10px 0; }
     .product-desc { font-size: 14px; color: #475569; margin: 0; }
+        div.stButton > button[kind="primary"],
+    div.stFormSubmitButton > button[kind="primary"] {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+        color: white;
+    }
+
+    div.stButton > button[kind="primary"]:hover,
+    div.stFormSubmitButton > button[kind="primary"]:hover {
+        background-color: #256628;
+        border-color: #256628;
+        color: white;
+    }
+
+    div.stButton > button[kind="primary"]:focus,
+    div.stFormSubmitButton > button[kind="primary"]:focus {
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        color: white;
+    }
     </style>
 """, unsafe_allow_html=True)
 
