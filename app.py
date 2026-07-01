@@ -9,7 +9,7 @@ import os
 st.set_page_config(page_title="Skinalyze | Precision Matrix", page_icon="🌿", layout="centered")
 
 st.markdown("""
-    <style>
+<style>
     .stApp,
     [data-testid="stAppViewContainer"] {
         background-color: #FFFFFF;
@@ -22,6 +22,13 @@ st.markdown("""
 
     [data-testid="stSidebar"] {
         background-color: #F3F4F6;
+    }
+
+    .top-dashboard-border {
+        width: 100%;
+        border-top: 4px solid #2E5A36;
+        padding-top: 16px;
+        margin-bottom: 24px;
     }
 
     .main-header {
@@ -41,8 +48,6 @@ st.markdown("""
 
     p,
     label,
-    span,
-    div,
     .stMarkdown,
     .stText,
     [data-testid="stMarkdownContainer"] {
@@ -72,11 +77,42 @@ st.markdown("""
     }
 
     div[data-testid="stAlert"],
-    div[data-testid="stForm"],
+    div[data-testid="stForm"] {
+        background-color: #F3F4F6;
+        color: #111827;
+        border-radius: 10px;
+    }
+
     div[data-testid="stSelectbox"] > div {
         background-color: #F3F4F6;
         color: #111827;
         border-radius: 10px;
+    }
+
+    div[data-baseweb="select"] > div {
+        background-color: #F3F4F6 !important;
+        color: #111827 !important;
+        border: 1px solid #D1D5DB !important;
+        border-radius: 8px !important;
+    }
+
+    div[data-baseweb="select"] span {
+        color: #111827 !important;
+    }
+
+    div[role="listbox"] {
+        background-color: #FFFFFF !important;
+        color: #111827 !important;
+    }
+
+    div[role="option"] {
+        background-color: #FFFFFF !important;
+        color: #111827 !important;
+    }
+
+    div[role="option"]:hover {
+        background-color: #F3F4F6 !important;
+        color: #111827 !important;
     }
 
     div.stButton,
@@ -86,29 +122,36 @@ st.markdown("""
 
     div.stButton > button,
     div.stFormSubmitButton > button {
-        background-color: #2E7D32;
-        border-color: #2E7D32;
-        color: white;
+        background-color: #2E7D32 !important;
+        border-color: #2E7D32 !important;
+        color: #FFFFFF !important;
         font-weight: 600;
         width: fit-content;
         min-width: unset;
         padding: 0.5rem 1rem;
     }
 
+    div.stButton > button *,
+    div.stFormSubmitButton > button * {
+        color: #FFFFFF !important;
+    }
+
     div.stButton > button:hover,
     div.stFormSubmitButton > button:hover {
-        background-color: #256628;
-        border-color: #256628;
-        color: white;
+        background-color: #256628 !important;
+        border-color: #256628 !important;
+        color: #FFFFFF !important;
     }
 
     div.stButton > button:focus,
     div.stFormSubmitButton > button:focus {
         box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
-        color: white;
+        color: #FFFFFF !important;
     }
 </style>
 """, unsafe_allow_html=True)
+
+st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 2. DATABASE CONNECTION FUNCTION
