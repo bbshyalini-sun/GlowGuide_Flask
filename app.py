@@ -90,21 +90,24 @@ elif st.session_state.view == 'assessment':
     with st.form("diagnostic_form"):
         st.write("### 1. Primary Skin Type")
         selected_type = st.selectbox(
-            "Identify your baseline skin behavior:", 
+            "Identify baseline skin behavior:", 
             options=skin_types['skin_type_id'].tolist(),
-            format_func=lambda x: skin_types.loc[skin_types['skin_type_id'] == x, 'skin_type_name'].values[0]
+            format_func=lambda x: "Select your skin type" if x is None else skin_types.loc[skin_types['skin_type_id'] == x, 'skin_type_name'].values[0]
         )
         
         st.write("### 2. Primary Skin Concern")
         selected_issue = st.selectbox(
             "What is your main target for treatment?", 
             options=skin_issues['issue_id'].tolist(),
-            format_func=lambda x: skin_issues.loc[skin_issues['issue_id'] == x, 'issue_name'].values[0]
+            format_func=lambda x: "Select your primary skin concern" if x is None else skin_issues.loc[skin_issues['issue_id'] == x, 'issue_name'].values[0]
         )
         
         submitted = st.form_submit_button("Generate Routine", type="primary", use_container_width=True)
         
         if submitted:
+            if selected_type is None or selected_issue is None:
+                st.warning("Please select both your skin type and primary skin concern.")
+                st.stop()
             # 💡 THE SMART FALLBACK QUERY
             # Looks for exact matches, but if targeting Acne (1), allows Oil Control (3) overlap.
             query = """
