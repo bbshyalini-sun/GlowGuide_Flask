@@ -87,19 +87,24 @@ elif st.session_state.view == 'assessment':
             # 💡 THE SMART FALLBACK QUERY
             # Looks for exact matches, but if targeting Acne (1), allows Oil Control (3) overlap.
             query = """
-                SELECT DISTINCT p.product_id, p.product_name, c.category_name, p.description
+                SELECT
+                    p.product_id,
+                    p.product_name,
+                    c.category_name,
+                    p.description,
+                    GROUP_CONCAT(DISTINCT i.ingredient_name) AS active_ingredients
                 FROM product p
                 JOIN category c ON p.category_id = c.category_id
                 JOIN product_skin_type pst ON p.product_id = pst.product_id
                 JOIN product_skin_issue psi ON p.product_id = psi.product_id
-                WHERE 
-                    (pst.skin_type_id = ? AND psi.issue_id = ?)
-                    OR 
-                    (psi.issue_id = ? AND ? = 3 AND psi.issue_id = 1)
+                LEFT JOIN product_ingredient pi ON p.product_id = pi.product_id
+                LEFT JOIN ingredient i ON pi.ingredient_id = i.ingredient_id
+                WHERE pst.skin_type_id = ? AND psi.issue_id = ?
+                GROUP BY p.product_id, p.product_name, c.category_name, p.description, c.category_id
                 ORDER BY c.category_id ASC, p.product_name ASC
             """
             
-            results = fetch_data(query, (selected_type, selected_issue, selected_issue, selected_type))
+            results = fetch_data(query, (selected_type, selected_issue))
             st.session_state.recommendations = results
             st.session_state.view = 'results'
             st.rerun()
