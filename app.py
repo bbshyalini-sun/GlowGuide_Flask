@@ -173,7 +173,8 @@ with col1:
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
 # Toggleable Sidebar Content
-if st.session_state.show_sidebar:
+# Toggleable Sidebar Content
+if st.session_state.get('show_sidebar', False):
     with st.sidebar:
         st.title("Skinalyze")
         
