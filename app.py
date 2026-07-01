@@ -164,16 +164,22 @@ if 'recommendations' not in st.session_state:
 # ==========================================
 # 3. TOP HEADER MENU
 # ==========================================
+# ==========================================
+# 3. TOP HEADER MENU & SIDEBAR
+# ==========================================
 col1, col2 = st.columns([1.5, 8.5])
 with col1:
-    if st.button("..."):
-        st.session_state.view = 'home'
+    if st.button("Dashboard"):
+        # Safely get the current state and toggle it
+        current_sidebar_state = st.session_state.get('show_sidebar', False)
+        st.session_state.show_sidebar = not current_sidebar_state
         st.rerun()
+with col2:
+    st.markdown('<p class="top-logo-text">Skinalyze</p>', unsafe_allow_html=True)
 
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
-# Toggleable Sidebar Content
-# Toggleable Sidebar Content
+# Toggleable Sidebar Content using safe .get()
 if st.session_state.get('show_sidebar', False):
     with st.sidebar:
         st.title("Skinalyze")
@@ -204,21 +210,7 @@ def fetch_data(query, params=()):
     conn = get_connection()
     return pd.read_sql_query(query, conn, params=params)
 
-# ==========================================
-# 5. SESSION STATE MANAGEMENT
-# ==========================================
-if 'view' not in st.session_state:
-    st.session_state.view = 'home'
-if 'recommendations' not in st.session_state:
-    st.session_state.recommendations = pd.DataFrame()
-if 'show_sidebar' not in st.session_state:
-    st.session_state.show_sidebar = False
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = ""
-if 'current_skin_type_name' not in st.session_state:
-    st.session_state.current_skin_type_name = ""
-if 'current_skin_issue_name' not in st.session_state:
-    st.session_state.current_skin_issue_name = ""
+
 
 # ==========================================
 # 6. VIEWS (HOME / ASSESSMENT / RESULTS)
