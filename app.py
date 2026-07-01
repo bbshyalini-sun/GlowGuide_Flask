@@ -6,7 +6,7 @@ import os
 # ==========================================
 # 1. PAGE CONFIGURATION & STYLES
 # ==========================================
-st.set_page_config(page_title="Skinalyze | Precision Matrix", page_icon="🌿", layout="centered")
+st.set_page_config(page_title="Skinalyze | Precision Matrix", layout="centered")
 
 st.markdown("""
 <style>
@@ -22,6 +22,14 @@ st.markdown("""
 
     [data-testid="stSidebar"] {
         background-color: #F3F4F6;
+    }
+
+    .top-logo-text {
+        color: #2E5A36;
+        font-weight: 800;
+        font-size: 1.5rem;
+        line-height: 2.5rem;
+        margin: 0;
     }
 
     .top-dashboard-border {
@@ -154,7 +162,28 @@ st.markdown("""
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
 # ==========================================
-# 2. DATABASE CONNECTION FUNCTION
+# 2. SESSION STATE MANAGEMENT
+# ==========================================
+if 'view' not in st.session_state:
+    st.session_state.view = 'home'
+if 'recommendations' not in st.session_state:
+    st.session_state.recommendations = pd.DataFrame()
+
+# ==========================================
+# 3. TOP HEADER MENU
+# ==========================================
+col1, col2 = st.columns([1.5, 8.5])
+with col1:
+    if st.button("Dashboard"):
+        st.session_state.view = 'home'
+        st.rerun()
+with col2:
+    st.markdown('<p class="top-logo-text">Skinalyze</p>', unsafe_allow_html=True)
+
+st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
+
+# ==========================================
+# 4. DATABASE CONNECTION FUNCTION
 # ==========================================
 DB_PATH = os.path.join(os.path.dirname(__file__), 'skincare.db')
 
@@ -169,7 +198,7 @@ def fetch_data(query, params=()):
     return pd.read_sql_query(query, conn, params=params)
 
 # ==========================================
-# 3. SESSION STATE MANAGEMENT
+# 5. SESSION STATE MANAGEMENT
 # ==========================================
 if 'view' not in st.session_state:
     st.session_state.view = 'home'
@@ -177,7 +206,7 @@ if 'recommendations' not in st.session_state:
     st.session_state.recommendations = pd.DataFrame()
 
 # ==========================================
-# 4. VIEWS (HOME / ASSESSMENT / RESULTS)
+# 5. VIEWS (HOME / ASSESSMENT / RESULTS)
 # ==========================================
 
 if st.session_state.view == 'home':
