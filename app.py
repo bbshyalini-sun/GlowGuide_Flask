@@ -10,18 +10,89 @@ st.set_page_config(page_title="Skinalyze | Precision Matrix", page_icon="🌿", 
 
 st.markdown("""
     <style>
-    .main-header { color: #2E5A36; font-weight: 800; text-align: center; font-size: 3rem; margin-bottom: 0px;}
-    .sub-header { color: #64748b; text-align: center; font-size: 1.2rem; margin-bottom: 2rem;}
-    .product-card { background-color: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 6px solid #2E5A36; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .product-title { font-size: 20px; color: #1E293B; font-weight: 700; margin: 0 0 10px 0; }
-    .product-desc { font-size: 14px; color: #475569; margin: 0; }
-    
-            div.stButton > button,
+    .stApp,
+    [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF;
+        color: #111827;
+    }
+
+    [data-testid="stHeader"] {
+        background-color: rgba(255, 255, 255, 0);
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #F3F4F6;
+    }
+
+    .main-header {
+        color: #2E5A36;
+        font-weight: 800;
+        text-align: center;
+        font-size: 3rem;
+        margin-bottom: 0;
+    }
+
+    .sub-header {
+        color: #111827;
+        text-align: center;
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+    }
+
+    p,
+    label,
+    span,
+    div,
+    .stMarkdown,
+    .stText,
+    [data-testid="stMarkdownContainer"] {
+        color: #111827;
+    }
+
+    .product-card {
+        background-color: #F3F4F6;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 6px solid #2E5A36;
+        margin-bottom: 15px;
+        box-shadow: none;
+    }
+
+    .product-title {
+        font-size: 20px;
+        color: #111827;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    .product-desc {
+        font-size: 14px;
+        color: #111827;
+        margin: 0;
+    }
+
+    div[data-testid="stAlert"],
+    div[data-testid="stForm"],
+    div[data-testid="stSelectbox"] > div {
+        background-color: #F3F4F6;
+        color: #111827;
+        border-radius: 10px;
+    }
+
+    div.stButton,
+    div.stFormSubmitButton {
+        width: fit-content;
+    }
+
+    div.stButton > button,
     div.stFormSubmitButton > button {
         background-color: #2E7D32;
         border-color: #2E7D32;
         color: white;
         font-weight: 600;
+        width: fit-content;
+        min-width: unset;
+        padding: 0.5rem 1rem;
     }
 
     div.stButton > button:hover,
@@ -36,24 +107,7 @@ st.markdown("""
         box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
         color: white;
     }
-            
-                .stApp {
-        background-color: #FFFFFF;
-        color: #1E293B;
-    }
-
-    [data-testid="stAppViewContainer"] {
-        background-color: #FFFFFF;
-    }
-
-    [data-testid="stHeader"] {
-        background-color: rgba(255, 255, 255, 0);
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: #F8FAFC;
-    }
-    </style>
+</style>
 """, unsafe_allow_html=True)
 
 # ==========================================
