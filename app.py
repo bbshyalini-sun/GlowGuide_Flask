@@ -169,13 +169,13 @@ if 'recommendations' not in st.session_state:
 # ==========================================
 col1, col2 = st.columns([1.5, 8.5])
 with col1:
-    if st.button("Dashboard"):
+    if st.button("..."):
         # Safely get the current state and toggle it
         current_sidebar_state = st.session_state.get('show_sidebar', False)
         st.session_state.show_sidebar = not current_sidebar_state
         st.rerun()
 with col2:
-    st.markdown('<p class="top-logo-text">Skinalyze</p>', unsafe_allow_html=True)
+    st.markdown('<h2 class="top-logo-text">Skinalyze</h2>', unsafe_allow_html=True)
 
 st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
