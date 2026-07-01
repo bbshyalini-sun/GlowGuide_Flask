@@ -237,6 +237,7 @@ if st.session_state.view == 'home':
 
 elif st.session_state.view == 'assessment':
     st.title("Skin Profiler")
+    st.markdown(f"Select your skin type and primary skin concern to receive a personalized skincare routine. You can also provide a profile name for easy reference.")
     
     # Fetch dropdown options from DB
     try:
