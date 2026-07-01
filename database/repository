@@ -1,0 +1,44 @@
+from database.connection import execute_query
+
+from database import queries
+
+
+def get_skin_types():
+
+    return execute_query(
+        queries.GET_SKIN_TYPES
+    )
+
+
+def get_skin_issues():
+
+    return execute_query(
+        queries.GET_SKIN_ISSUES
+    )
+
+
+def get_statistics():
+
+    return {
+
+        "products":
+        execute_query(
+            queries.COUNT_PRODUCTS
+        ).iloc[0]["total"],
+
+        "categories":
+        execute_query(
+            queries.COUNT_CATEGORIES
+        ).iloc[0]["total"],
+
+        "skin_types":
+        execute_query(
+            queries.COUNT_SKIN_TYPES
+        ).iloc[0]["total"],
+
+        "skin_issues":
+        execute_query(
+            queries.COUNT_SKIN_ISSUES
+        ).iloc[0]["total"]
+
+    }
