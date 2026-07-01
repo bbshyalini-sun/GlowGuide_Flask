@@ -12,7 +12,7 @@ def init_database_with_real_data():
     # 1. Establish connection and enforce foreign keys
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("PRAGMA foreign_keys = ON;")
+    cursor.execute("PRAGMA foreign_keys = OFF;")
     
     # Drop all old tables to clear corrupted cache schemas
     tables = [
@@ -116,7 +116,11 @@ def init_database_with_real_data():
             success_count += 1
         except Exception as ex:
             skipped_count += 1
+            print("Skipped statement because:", ex)
+            print(stmt[:300])
+            print("-" * 80)
             
+    cursor.execute("PRAGMA foreign_keys = ON;")
     conn.commit()
     conn.close()
     print(f"✨ Compilation Finished! Loaded: {success_count} chunks safely. Skipped: {skipped_count} items.\n")
