@@ -388,7 +388,7 @@ elif st.session_state.view == 'results':
             )
             # Removed 'use_container_width=True' so the button wraps to text size
             st.download_button(
-                label="📥 Export Routine to PDF",
+                label="📥 Export",
                 data=pdf_bytes,
                 file_name=f"skinalyze_routine_{st.session_state.user_name}.pdf",
                 mime="application/pdf"
