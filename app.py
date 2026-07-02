@@ -366,25 +366,37 @@ elif st.session_state.view == 'results':
     st.markdown(f"**Hello {st.session_state.user_name}, here is the custom configuration targeted precisely for {st.session_state.current_skin_type_name} and {st.session_state.current_skin_issue_name}.**")
     st.write("") # Add a little spacing
     
-    # Export to PDF Button
-    try:
-        pdf_bytes = generate_pdf(
-            st.session_state.user_name,
-            st.session_state.current_skin_type_name,
-            st.session_state.current_skin_issue_name,
-            results
-        )
-        st.download_button(
-            label="📥 Export Routine to PDF",
-            data=pdf_bytes,
-            file_name=f"skinalyze_routine_{st.session_state.user_name}.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
-    except Exception as e:
-        st.error(f"Error generating PDF utility: {e}")
+    # --- ACTION BAR (Place this ABOVE your results list) ---
+    st.write("---")
+
+    # Use columns to place buttons side-by-side neatly
+    col1, col2 = st.columns([1, 1]) 
+
+    with col1:
+        # Removed 'use_container_width=True' so the button wraps to text size
+        if st.button("↺ Restart Diagnostic"): 
+            st.session_state.view = 'assessment'
+            st.rerun()
         
-    st.write("") # Spacing container
+    with col2:
+        try:
+            pdf_bytes = generate_pdf(
+                st.session_state.user_name,
+                st.session_state.current_skin_type_name,
+                st.session_state.current_skin_issue_name,
+                results
+            )
+            # Removed 'use_container_width=True' so the button wraps to text size
+            st.download_button(
+                label="📥 Export Routine to PDF",
+                data=pdf_bytes,
+                file_name=f"skinalyze_routine_{st.session_state.user_name}.pdf",
+                mime="application/pdf"
+            )
+        except Exception as e:
+            st.error(f"Error generating PDF utility: {e}")
+        
+    st.write("---") # Optional: adds a clean visual separator before your list begins
     
     if results.empty:
         st.warning("⚠️ No exact matches found for this specific combination. Try broadening your criteria.")
@@ -413,7 +425,4 @@ elif st.session_state.view == 'results':
                     </div>
                 """, unsafe_allow_html=True)
     
-    st.write("---")
-    if st.button("↺ Restart Diagnostic", use_container_width=True):
-        st.session_state.view = 'assessment'
-        st.rerun()
+    
