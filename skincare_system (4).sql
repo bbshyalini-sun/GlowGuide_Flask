@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 30, 2026 at 04:59 AM
+-- Generation Time: Jul 02, 2026 at 08:03 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -292,7 +292,15 @@ INSERT INTO `product` (`product_id`, `product_name`, `category_id`, `description
 (3092, 'GLAMGLOW Supertoner 200ml', 4, 'Imported automated formulation. Source registry: dataset'),
 (3093, 'OSKIA Floral Water Toner 150ml', 4, 'Imported automated formulation. Source registry: dataset'),
 (3094, 'Neal\'s Yard Remedies Rehydrating Rose Toner 200ml', 4, 'Imported automated formulation. Source registry: dataset'),
-(3095, 'Pai Skincare Rice Plant and Rosemary BioAffinity Skin Tonic 50ml', 4, 'Imported automated formulation. Source registry: dataset');
+(3095, 'Pai Skincare Rice Plant and Rosemary BioAffinity Skin Tonic 50ml', 4, 'Imported automated formulation. Source registry: dataset'),
+(4001, 'Aveda Hand Relief Night Renewal Serum 30ml', 3, 'Added to fill Oily + Deep Wrinkles gap.'),
+(4002, 'Elizabeth Arden Prevage Advanced Daily Serum', 3, 'Added to fill Oily + Deep Wrinkles gap.'),
+(4003, 'Estée Lauder Perfectionist Pro Rapid Brightening Treatment with Ferment2+ Vitamin C 50ml', 3, 'Added to fill Oily + Dullness gap.'),
+(4004, 'Decléor Hydra Floral White Petal Skin Perfecting Concentrate 30ml', 3, 'Added to fill Oily + Dullness gap.'),
+(4005, 'La Roche-Posay Toleriane Ultra Fluid 40ml', 2, 'Added to fill Dry + Deep Wrinkles gap.'),
+(4006, 'Chantecaille Bio Lift Mask - 50ml', 3, 'Added to fill Sensitive + Deep Wrinkles gap.'),
+(4007, 'Holika Holika Skin Rescuer Mask Sheet - Collagen', 3, 'Added to fill Sensitive + Deep Wrinkles gap.'),
+(4008, 'Nip+Fab Teen Skin Fix Salicylic Acid Sheet Mask', 3, 'Added to fill Sensitive + Deep Wrinkles gap.');
 
 -- --------------------------------------------------------
 
@@ -429,6 +437,7 @@ INSERT INTO `product_skin_issue` (`product_id`, `issue_id`) VALUES
 (29, 3),
 (29, 10),
 (33, 5),
+(33, 6),
 (33, 7),
 (33, 9),
 (35, 1),
@@ -444,6 +453,7 @@ INSERT INTO `product_skin_issue` (`product_id`, `issue_id`) VALUES
 (45, 1),
 (45, 3),
 (45, 5),
+(45, 6),
 (52, 5),
 (52, 10),
 (84, 1),
@@ -539,6 +549,8 @@ INSERT INTO `product_skin_issue` (`product_id`, `issue_id`) VALUES
 (3033, 8),
 (3034, 8),
 (3035, 8),
+(3036, 4),
+(3036, 6),
 (3036, 10),
 (3037, 10),
 (3038, 9),
@@ -595,7 +607,15 @@ INSERT INTO `product_skin_issue` (`product_id`, `issue_id`) VALUES
 (3092, 10),
 (3093, 8),
 (3094, 8),
-(3095, 8);
+(3095, 8),
+(4001, 6),
+(4002, 6),
+(4003, 4),
+(4004, 4),
+(4005, 6),
+(4006, 6),
+(4007, 6),
+(4008, 6);
 
 -- --------------------------------------------------------
 
@@ -647,12 +667,14 @@ INSERT INTO `product_skin_type` (`product_id`, `skin_type_id`) VALUES
 (26, 3),
 (27, 3),
 (29, 3),
+(33, 1),
 (33, 4),
 (35, 2),
 (36, 1),
 (37, 1),
 (43, 3),
 (44, 3),
+(45, 1),
 (45, 3),
 (52, 3),
 (84, 1),
@@ -723,6 +745,7 @@ INSERT INTO `product_skin_type` (`product_id`, `skin_type_id`) VALUES
 (3033, 2),
 (3034, 3),
 (3035, 2),
+(3036, 2),
 (3036, 3),
 (3037, 3),
 (3038, 3),
@@ -782,7 +805,15 @@ INSERT INTO `product_skin_type` (`product_id`, `skin_type_id`) VALUES
 (3092, 3),
 (3093, 3),
 (3094, 3),
-(3095, 3);
+(3095, 3),
+(4001, 2),
+(4002, 2),
+(4003, 2),
+(4004, 2),
+(4005, 1),
+(4006, 4),
+(4007, 4),
+(4008, 4);
 
 -- --------------------------------------------------------
 
@@ -908,7 +939,7 @@ ALTER TABLE `ingredient`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3096;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4009;
 
 --
 -- AUTO_INCREMENT for table `skin_issue`
@@ -939,7 +970,7 @@ ALTER TABLE `product_ingredient`
   ADD CONSTRAINT `product_ingredient_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `product_ingredient_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredient` (`ingredient_id`) ON DELETE CASCADE;
 
-
+--
 -- Constraints for table `product_skin_issue`
 --
 ALTER TABLE `product_skin_issue`
