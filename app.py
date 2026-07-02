@@ -359,7 +359,7 @@ elif st.session_state.view == 'assessment':
             st.rerun()
 
 elif st.session_state.view == 'results':
-    st.title("✨ Your Matrix Routine")
+    st.title("Your Skinalyze Matrix Blueprint")
     results = st.session_state.recommendations
 
     # Custom Greeting
