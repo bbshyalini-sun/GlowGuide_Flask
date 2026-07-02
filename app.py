@@ -392,18 +392,23 @@ elif st.session_state.view == 'results':
         # Group by category (Cleanser, Moisturizer, etc.)
         categories = results['category_name'].unique()
         
-        for cat in categories:
-            st.markdown(f"### {cat}")
-            cat_products = results[results['category_name'] == cat].head(3) # Limit to top 3 per category
+        for _, row in cat_products.iterrows():
+            # Use 'active_ingredients' from your database query
+            ingredients = row['active_ingredients'] if pd.notna(row['active_ingredients']) and row['active_ingredients'].strip() != "" else None
             
-            for _, row in cat_products.iterrows():
-                desc = row['description'] if pd.notna(row['description']) else "Clinical formulation."
-                st.markdown(f"""
-                    <div class="product-card">
-                        <div class="product-title">{row['product_name']}</div>
-                        <div class="product-desc">{desc}</div>
-                    </div>
-                """, unsafe_allow_html=True)
+            # Format the description block based on whether ingredients exist
+            if ingredients:
+                # If there are commas, it automatically handles multiple ingredients nicely
+                desc_text = f"**Key Ingredients:** {ingredients}"
+            else:
+                desc_text = "Clinical formulation."
+
+            st.markdown(f"""
+                <div class="product-card">
+                    <div class="product-title">{row['product_name']}</div>
+                    <div class="product-desc">{desc_text}</div>
+                </div>
+            """, unsafe_allow_html=True)
     
     st.write("---")
     if st.button("↺ Restart Diagnostic", use_container_width=True):
