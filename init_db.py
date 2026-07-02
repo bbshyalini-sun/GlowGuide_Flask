@@ -4,7 +4,7 @@ import re
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "skincare.db")
-SQL_FILE_PATH = os.path.join(BASE_DIR, "skincare_system (6).sql")
+SQL_FILE_PATH = os.path.join(BASE_DIR, "skincare_system (4).sql")
 
 def init_database_with_real_data():
     print("🚀 Starting native SQLite compilation from SQL dump...")
