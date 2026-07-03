@@ -162,35 +162,48 @@ if 'recommendations' not in st.session_state:
     st.session_state.recommendations = pd.DataFrame()
 
 # ==========================================
-# 3. TOP HEADER MENU
-# ==========================================
-# ==========================================
 # 3. TOP HEADER MENU & SIDEBAR
 # ==========================================
-col1, col2 = st.columns([1.5, 8.5])
+
+# 1. Hide Streamlit's invisible native toggle so it stops overlapping your button!
+st.markdown("""
+    <style>
+        [data-testid="collapsedControl"] { display: none !important; }
+        [data-testid="stSidebarCollapseButton"] { display: none !important; }
+    </style>
+""", unsafe_allow_html=True)
+
+# 2. Initialize the state cleanly at the top
+if 'show_sidebar' not in st.session_state:
+    st.session_state.show_sidebar = False
+
+# 3. Render the Header
+col1, col2 = st.columns([1, 9]) # Tweaked ratio so the button fits snugly
+
 with col1:
-    if st.button("..."):
-        # Safely get the current state and toggle it
-        current_sidebar_state = st.session_state.get('show_sidebar', False)
-        st.session_state.show_sidebar = not current_sidebar_state
+    # Changed "..." to a cleaner Hamburger icon (☰)
+    if st.button("☰", help="Toggle Sidebar"): 
+        st.session_state.show_sidebar = not st.session_state.show_sidebar
         st.rerun()
 
-st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
+with col2:
+    st.markdown('<div class="top-dashboard-border"></div>', unsafe_allow_html=True)
 
-# Toggleable Sidebar Content using safe .get()
-if st.session_state.get('show_sidebar', False):
+# 4. Render the Sidebar Content
+if st.session_state.show_sidebar:
     with st.sidebar:
-        st.title("Skinalyze")
+        st.title("✨ Skinalyze")
         
-        if st.button("Home", use_container_width=True):
+        # Added emojis for a prettier, modern UI
+        if st.button("🏠 Home", use_container_width=True):
             st.session_state.view = 'home'
-            st.session_state.show_sidebar = False
+            st.session_state.show_sidebar = False # Auto-close sidebar on navigation
             st.rerun()
             
-        if st.button("Skincare Info Guide", use_container_width=True):
+        if st.button("📖 Skincare Info Guide", use_container_width=True):
             pass # Placeholder for future functionality
             
-        if st.button("History", use_container_width=True):
+        if st.button("🕒 History", use_container_width=True):
             pass # Placeholder for future functionality
 
 # ==========================================
