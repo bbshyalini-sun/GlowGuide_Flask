@@ -16,13 +16,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-APP_BACKGROUND = "#fdfdf7"
+APP_BACKGROUND = "#edf7ee"
 CARD_BACKGROUND = "#ffffff"
-TEXT = "#102a43"
-MUTED = "#556874"
-PRIMARY = "#5aa897"
-PRIMARY_DARK = "#3f8c75"
-ACCENT = "#7ab39b"
+TEXT = "#10392e"
+MUTED = "#5f7f6d"
+PRIMARY = "#5aa575"
+PRIMARY_DARK = "#368160"
+ACCENT = "#78b094"
 
 st.markdown(
     f"""
@@ -31,19 +31,19 @@ st.markdown(
         body {{ background: {APP_BACKGROUND}; }}
         .stApp {{ background: {APP_BACKGROUND}; color: {TEXT}; }}
         [data-testid="stAppViewContainer"] {{ background: {APP_BACKGROUND}; }}
-        [data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid rgba(90, 168, 151, 0.15); }}
+        [data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid rgba(90, 165, 117, 0.18); }}
         #MainMenu {{ visibility: hidden; }}
         footer {{ visibility: hidden; }}
         header {{ visibility: hidden; }}
         [data-testid="collapsedControl"] {{ display: none !important; }}
 
         .hero-panel {{
-            background: linear-gradient(180deg, rgba(154,209,191,0.18), rgba(255,255,255,0.98));
-            border: 1px solid rgba(154, 209, 191, 0.3);
+            background: linear-gradient(180deg, rgba(123, 187, 152, 0.32), rgba(255,255,255,0.98));
+            border: 1px solid rgba(123, 187, 152, 0.4);
             border-radius: 28px;
             padding: 36px;
             margin-bottom: 32px;
-            box-shadow: 0 20px 60px rgba(90,168,151,0.12);
+            box-shadow: 0 20px 60px rgba(90,165,117,0.18);
         }}
         .hero-title {{ font-size: 3rem; font-weight: 800; margin: 0; color: {TEXT}; }}
         .hero-subtitle {{ font-size: 1.05rem; color: {MUTED}; margin-top: 16px; max-width: 720px; }}
@@ -51,15 +51,15 @@ st.markdown(
             background: {CARD_BACKGROUND};
             border-radius: 22px;
             padding: 28px;
-            border: 1px solid rgba(15, 23, 42, 0.08);
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.04);
+            border: 1px solid rgba(90, 165, 117, 0.18);
+            box-shadow: 0 16px 40px rgba(90, 165, 117, 0.08);
             margin-bottom: 24px;
         }}
         .feature-card {{
             background: {CARD_BACKGROUND};
             padding: 22px;
             border-radius: 22px;
-            border: 1px solid rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(123, 187, 152, 0.25);
             min-height: 180px;
         }}
         .feature-title {{ font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: {TEXT}; }}
@@ -68,20 +68,20 @@ st.markdown(
             background: {CARD_BACKGROUND};
             border-radius: 20px;
             padding: 22px;
-            border: 1px solid rgba(15, 23, 42, 0.06);
+            border: 1px solid rgba(123, 187, 152, 0.2);
             margin-bottom: 18px;
         }}
         .product-title {{ margin: 0 0 8px 0; color: {TEXT}; font-size: 1.15rem; font-weight: 700; }}
         .product-meta {{ color: {ACCENT}; margin-bottom: 12px; font-size: 0.95rem; letter-spacing: 0.01em; }}
         .product-desc {{ color: {MUTED}; line-height: 1.7; margin: 0.35rem 0; font-size: 0.95rem; }}
         .section-header {{ color: {TEXT}; margin-bottom: 14px; }}
-        .step-pill {{ display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(122, 179, 155, 0.18); color: {TEXT}; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }}
+        .step-pill {{ display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(123, 187, 152, 0.3); color: {TEXT}; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }}
         .step-pill.active {{ background: {PRIMARY}; color: #ffffff; }}
-        .disclaimer-card {{ background: rgba(90, 168, 151, 0.12); border-radius: 18px; padding: 20px; color: {TEXT}; border: 1px solid rgba(90, 168, 151, 0.2); }}
-        .metric-card {{ background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(90, 168, 151, 0.12); min-height: 120px; }}
+        .disclaimer-card {{ background: rgba(123, 187, 152, 0.18); border-radius: 18px; padding: 20px; color: {TEXT}; border: 1px solid rgba(123, 187, 152, 0.32); }}
+        .metric-card {{ background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(123, 187, 152, 0.18); min-height: 120px; }}
         .metric-value {{ font-size: 2rem; font-weight: 700; margin: 0; color: {TEXT}; }}
         .metric-label {{ margin: 0; color: {MUTED}; font-size: 0.95rem; }}
-        .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.18) !important; }}
+        .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.23) !important; }}
         .stButton > button:hover, .stFormSubmitButton > button:hover {{ background-color: {PRIMARY_DARK} !important; }}
     </style>
     """,
@@ -218,8 +218,8 @@ def render_sidebar():
         st.markdown(
             """
             <div style='padding: 24px 0 14px 0;'>
-                <div style='font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>Skinalyze</div>
-                <div style='color: #475569; font-size: 0.95rem; line-height: 1.6;'>A cleaner, smarter way to build your skincare routine.</div>
+                <div style='font-size: 1.35rem; font-weight: 800; color: #10392e; margin-bottom: 6px;'>Skinalyze</div>
+                <div style='color: #5f7f6d; font-size: 0.95rem; line-height: 1.6;'>A cleaner, smarter way to build your skincare routine.</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -249,11 +249,11 @@ def render_sidebar():
         st.markdown(
             f"""
             <div style='display:flex; gap: 12px; flex-wrap: wrap;'>
-                <div style='background: rgba(47, 108, 114, 0.08); border-radius: 14px; padding: 14px; min-width: 100px;'>
+                <div style='background: rgba(123, 187, 152, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
                     <div style='font-weight:700; font-size:1.2rem;'>{stats['products']}</div>
                     <div style='color:{MUTED}; font-size:0.9rem;'>Products</div>
                 </div>
-                <div style='background: rgba(79, 143, 143, 0.08); border-radius: 14px; padding: 14px; min-width: 100px;'>
+                <div style='background: rgba(90, 165, 117, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
                     <div style='font-weight:700; font-size:1.2rem;'>{stats['categories']}</div>
                     <div style='color:{MUTED}; font-size:0.9rem;'>Categories</div>
                 </div>
@@ -278,7 +278,7 @@ def render_home():
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div class="section-header">What this experience provides</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #475569; font-size: 1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
+        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
         '<li>Select your skin type and main concern.</li>'
         '<li>See product suggestions grouped by routine category.</li>'
         '<li>Export only the items you want in a polished PDF.</li>'
@@ -308,8 +308,8 @@ def render_home():
     st.markdown(
         '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">'
         '<div><div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start with what matters</div>'
-        '<div style="color:#475569; line-height:1.75;">Choose your profile, review the recommended routine, and export only the products that match your needs.</div></div>'
-        '<div><button style="background: #2f6c72; color: #ffffff; border:none; border-radius: 999px; padding: 0.85rem 1.4rem; font-weight: 700;">Ready to begin</button></div>'
+        '<div style="color:#5f7f6d; line-height:1.75;">Choose your profile, review the recommended routine, and export only the products that match your needs.</div></div>'
+        '<div><button style="background: #5aa575; color: #ffffff; border:none; border-radius: 999px; padding: 0.85rem 1.4rem; font-weight: 700;">Ready to begin</button></div>'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -328,7 +328,7 @@ def render_assessment():
     st.markdown('<div class="step-pill active">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Complete a short assessment to see tailored skincare recommendations.</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1rem; color: #475569; line-height: 1.75; margin-bottom: 18px;">Use the options below to describe your skin and the issue you want to address first.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1rem; color: #5f7f6d; line-height: 1.75; margin-bottom: 18px;">Use the options below to describe your skin and the issue you want to address first.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
@@ -356,7 +356,7 @@ def render_assessment():
             help='Pick the skin issue you want to address first.',
         )
 
-        st.markdown('<div style="color: #475569; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #5f7f6d; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
 
         submitted = st.form_submit_button('Review recommendations')
 
@@ -407,7 +407,7 @@ def render_results():
 
     st.markdown('<div class="step-pill active">Step 2 of 3: Review recommendations</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Your personalized product roadmap is ready.</div>', unsafe_allow_html=True)
-    st.markdown('<div style="color: #475569; margin-bottom: 16px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="color: #5f7f6d; margin-bottom: 16px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
     st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
@@ -453,7 +453,7 @@ def render_results():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">', unsafe_allow_html=True)
-    st.markdown(f'<div><div style="font-size:1.1rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#475569;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div><div style="font-size:1.1rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -531,7 +531,7 @@ def render_guide():
 
     with st.expander('Skin types explained', expanded=True):
         st.markdown(
-            '<div style="color:#475569; line-height:1.8;">'
+            '<div style="color:#5f7f6d; line-height:1.8;">'
             '<strong>Oily</strong>: Skin that appears shiny and may feel greasy by midday. Ideal routines focus on lightweight hydration and oil control.<br>'
             '<strong>Dry</strong>: Skin that feels tight, flaky, or uncomfortable. Look for rich, moisture-retaining products.<br>'
             '<strong>Combination</strong>: Oil in the T-zone with drier cheeks. Balance hydration without overloading oily areas.<br>'
@@ -541,7 +541,7 @@ def render_guide():
 
     with st.expander('Common concerns', expanded=False):
         st.markdown(
-            '<div style="color:#475569; line-height:1.8;">'
+            '<div style="color:#5f7f6d; line-height:1.8;">'
             '<strong>Acne</strong>: Look for gentle exfoliation and oil-balancing support.<br>'
             '<strong>Dryness</strong>: Prioritize humectants and occlusives for lasting hydration.<br>'
             '<strong>Excess sebum</strong>: Reduce shine with lightweight, non-comedogenic products.<br>'
@@ -551,7 +551,7 @@ def render_guide():
 
     with st.expander('Ingredient insights', expanded=False):
         st.markdown(
-            '<div style="color:#475569; line-height:1.8;">'
+            '<div style="color:#5f7f6d; line-height:1.8;">'
             '<strong>Hyaluronic acid</strong>: Hydrates by drawing moisture into the skin.<br>'
             '<strong>Niacinamide</strong>: Balances oil production and supports barrier strength.<br>'
             '<strong>Vitamin C</strong>: Helps brighten dullness and support a more even skin tone.<br>'
@@ -561,7 +561,7 @@ def render_guide():
 
     with st.expander('Routine tips', expanded=False):
         st.markdown(
-            '<div style="color:#475569; line-height:1.8;">'
+            '<div style="color:#5f7f6d; line-height:1.8;">'
             '<strong>Cleanse</strong> with a gentle cleanser to remove impurities without stripping skin.<br>'
             '<strong>Treat</strong> with serums and targeted support for your main concern.<br>'
             '<strong>Moisturize</strong> daily to keep the skin barrier healthy.<br>'
@@ -576,7 +576,7 @@ def render_about():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#475569; line-height:1.8;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
+        '<div style="color:#5f7f6d; line-height:1.8;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
         'It applies a rule-based matching process to pair skin types and concerns with suitable products and ingredient profiles.</div>',
         unsafe_allow_html=True,
     )
@@ -585,7 +585,7 @@ def render_about():
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="font-weight:700; margin-bottom:10px;">How recommendations are generated</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#475569; line-height:1.8;">The system finds products that are linked to your chosen skin type and primary concern. '
+        '<div style="color:#5f7f6d; line-height:1.8;">The system finds products that are linked to your chosen skin type and primary concern. '
         'Results are grouped by category so you can review cleansers, moisturizers, serums, and more in an organized way.</div>',
         unsafe_allow_html=True,
     )
@@ -594,7 +594,7 @@ def render_about():
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="font-weight:700; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #475569; font-size: 1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
+        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
         '<li>Streamlit for interface and navigation.</li>'
         '<li>SQLite for light product and profile data storage.</li>'
         '<li>ReportLab to generate export-ready PDF summaries.</li>'
