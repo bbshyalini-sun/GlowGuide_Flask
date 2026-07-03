@@ -16,13 +16,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-APP_BACKGROUND = "#f7f9fb"
+APP_BACKGROUND = "#fdfdf7"
 CARD_BACKGROUND = "#ffffff"
-TEXT = "#0f172a"
-MUTED = "#475569"
-PRIMARY = "#2f6c72"
-PRIMARY_DARK = "#255a5d"
-ACCENT = "#4d7c72"
+TEXT = "#102a43"
+MUTED = "#556874"
+PRIMARY = "#5aa897"
+PRIMARY_DARK = "#3f8c75"
+ACCENT = "#7ab39b"
 
 st.markdown(
     f"""
@@ -31,19 +31,19 @@ st.markdown(
         body {{ background: {APP_BACKGROUND}; }}
         .stApp {{ background: {APP_BACKGROUND}; color: {TEXT}; }}
         [data-testid="stAppViewContainer"] {{ background: {APP_BACKGROUND}; }}
-        [data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid rgba(15, 23, 42, 0.08); }}
+        [data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid rgba(90, 168, 151, 0.15); }}
         #MainMenu {{ visibility: hidden; }}
         footer {{ visibility: hidden; }}
         header {{ visibility: hidden; }}
         [data-testid="collapsedControl"] {{ display: none !important; }}
 
         .hero-panel {{
-            background: linear-gradient(180deg, rgba(47,108,114,0.12), rgba(255,255,255,0.95));
-            border: 1px solid rgba(79, 143, 143, 0.18);
+            background: linear-gradient(180deg, rgba(154,209,191,0.18), rgba(255,255,255,0.98));
+            border: 1px solid rgba(154, 209, 191, 0.3);
             border-radius: 28px;
             padding: 36px;
             margin-bottom: 32px;
-            box-shadow: 0 20px 60px rgba(47,108,114,0.08);
+            box-shadow: 0 20px 60px rgba(90,168,151,0.12);
         }}
         .hero-title {{ font-size: 3rem; font-weight: 800; margin: 0; color: {TEXT}; }}
         .hero-subtitle {{ font-size: 1.05rem; color: {MUTED}; margin-top: 16px; max-width: 720px; }}
@@ -75,13 +75,13 @@ st.markdown(
         .product-meta {{ color: {ACCENT}; margin-bottom: 12px; font-size: 0.95rem; letter-spacing: 0.01em; }}
         .product-desc {{ color: {MUTED}; line-height: 1.7; margin: 0.35rem 0; font-size: 0.95rem; }}
         .section-header {{ color: {TEXT}; margin-bottom: 14px; }}
-        .step-pill {{ display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(79, 143, 143, 0.12); color: {TEXT}; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }}
+        .step-pill {{ display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(122, 179, 155, 0.18); color: {TEXT}; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }}
         .step-pill.active {{ background: {PRIMARY}; color: #ffffff; }}
-        .disclaimer-card {{ background: rgba(47, 108, 114, 0.08); border-radius: 18px; padding: 20px; color: {TEXT}; border: 1px solid rgba(47, 108, 114, 0.14); }}
-        .metric-card {{ background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(15, 23, 42, 0.08); min-height: 120px; }}
+        .disclaimer-card {{ background: rgba(90, 168, 151, 0.12); border-radius: 18px; padding: 20px; color: {TEXT}; border: 1px solid rgba(90, 168, 151, 0.2); }}
+        .metric-card {{ background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(90, 168, 151, 0.12); min-height: 120px; }}
         .metric-value {{ font-size: 2rem; font-weight: 700; margin: 0; color: {TEXT}; }}
         .metric-label {{ margin: 0; color: {MUTED}; font-size: 0.95rem; }}
-        .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(47, 108, 114, 0.18) !important; }}
+        .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.18) !important; }}
         .stButton > button:hover, .stFormSubmitButton > button:hover {{ background-color: {PRIMARY_DARK} !important; }}
     </style>
     """,
