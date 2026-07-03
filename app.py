@@ -83,6 +83,18 @@ st.markdown(
         .metric-label {{ margin: 0; color: {MUTED}; font-size: 0.95rem; }}
         .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.23) !important; }}
         .stButton > button:hover, .stFormSubmitButton > button:hover {{ background-color: {PRIMARY_DARK} !important; }}
+
+        /* Main content container: responsive, centered, reads well on laptops */
+        .app-content {{
+            width: 70%;
+            max-width: 1100px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            padding: 0 18px;
+        }}
+        @media (max-width: 900px) {{
+            .app-content {{ width: 92%; }}
+        }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -264,9 +276,10 @@ render_sidebar()
 # 4. PAGE RENDERERS
 # ==========================================
 def render_home():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="hero-panel">', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">A clearer skincare path, tailored to your needs.</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-subtitle">Skinalyze helps you discover routine recommendations with product-focused clarity and a premium, distraction-free layout.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">Welcome to Skinalyze</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-subtitle">Skinalyze helps you with recommendations with product-focused clarity.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -309,15 +322,16 @@ def render_home():
     with cta_right:
         if st.button('Ready to begin', use_container_width=True, key='home_ready'):
             st.session_state.view = 'assessment'
-            return
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
     st.markdown('<strong>Disclaimer:</strong> Skinalyze delivers general skincare guidance only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_assessment():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Complete a short assessment to see tailored skincare recommendations.</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -389,9 +403,11 @@ def render_assessment():
             st.session_state.view = 'results'
 
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_results():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
@@ -496,6 +512,7 @@ def render_results():
 
 
 def render_history():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     update_history()
     st.markdown('<div class="step-pill active">Recent recommendations</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Your last 24 hours of recommendation activity.</div>', unsafe_allow_html=True)
@@ -515,9 +532,11 @@ def render_history():
         })
 
     st.table(pd.DataFrame(rows))
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_guide():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active">Skincare guide</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Understand skin types, concerns, and routine essentials.</div>', unsafe_allow_html=True)
 
@@ -560,9 +579,11 @@ def render_guide():
             '<strong>Protect</strong> with SPF each morning when exposed to sunlight.</div>',
             unsafe_allow_html=True,
         )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_about():
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active">About Skinalyze</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Why this system exists and how it works.</div>', unsafe_allow_html=True)
 
@@ -597,6 +618,7 @@ def render_about():
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
     st.markdown('<strong>Note:</strong> This service offers general skincare suggestions and is not a substitute for professional medical advice.', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 
