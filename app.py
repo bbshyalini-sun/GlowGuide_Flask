@@ -10,7 +10,7 @@ import streamlit as st
 # 1. PAGE CONFIGURATION & GLOBAL STYLES
 # ==========================================
 st.set_page_config(
-    page_title="GlowGuide",
+    page_title="Skinalyze",
     page_icon="✨",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -160,7 +160,7 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 
     page.setFont('Helvetica-Bold', 22)
     page.setFillColorRGB(0.18, 0.35, 0.36)
-    page.drawString(50, height - 60, 'GlowGuide Skincare Brief')
+    page.drawString(50, height - 60, 'Skinalyze Skincare Brief')
     page.setStrokeColorRGB(0.18, 0.35, 0.36)
     page.setLineWidth(2)
     page.line(50, height - 70, width - 50, height - 70)
@@ -218,7 +218,7 @@ def render_sidebar():
         st.markdown(
             """
             <div style='padding: 24px 0 14px 0;'>
-                <div style='font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>GlowGuide</div>
+                <div style='font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;'>Skinalyze</div>
                 <div style='color: #475569; font-size: 0.95rem; line-height: 1.6;'>A cleaner, smarter way to build your skincare routine.</div>
             </div>
             """,
@@ -272,7 +272,7 @@ render_sidebar()
 def render_home():
     st.markdown('<div class="hero-panel">', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">A clearer skincare path, tailored to your needs.</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-subtitle">GlowGuide helps you discover routine recommendations with product-focused clarity and a premium, distraction-free layout.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-subtitle">Skinalyze helps you discover routine recommendations with product-focused clarity and a premium, distraction-free layout.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -316,7 +316,7 @@ def render_home():
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
-    st.markdown('<strong>Disclaimer:</strong> GlowGuide delivers general skincare guidance only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
+    st.markdown('<strong>Disclaimer:</strong> Skinalyze delivers general skincare guidance only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button('Start Skin Assessment', use_container_width=False):
@@ -408,6 +408,7 @@ def render_results():
     st.markdown('<div class="step-pill active">Step 2 of 3: Review recommendations</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Your personalized product roadmap is ready.</div>', unsafe_allow_html=True)
     st.markdown('<div style="color: #475569; margin-bottom: 16px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
     if st.session_state.results_page_key != expected_key:
@@ -470,7 +471,7 @@ def render_results():
             export_container.download_button(
                 label='📥 Export selected products',
                 data=pdf_bytes,
-                file_name=f'GlowGuide_{st.session_state.user_name}_recommendations.pdf',
+                file_name=f'Skinalyze_{st.session_state.user_name}_recommendations.pdf',
                 mime='application/pdf',
             )
         except Exception as err:
@@ -570,12 +571,12 @@ def render_guide():
 
 
 def render_about():
-    st.markdown('<div class="step-pill active">About GlowGuide</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-pill active">About Skinalyze</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Why this system exists and how it works.</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#475569; line-height:1.8;">GlowGuide uses your skin profile to surface practical product recommendations from a curated database. '
+        '<div style="color:#475569; line-height:1.8;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
         'It applies a rule-based matching process to pair skin types and concerns with suitable products and ingredient profiles.</div>',
         unsafe_allow_html=True,
     )
