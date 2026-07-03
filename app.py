@@ -227,22 +227,16 @@ def render_sidebar():
 
         if st.button('🏠 Home', use_container_width=True):
             st.session_state.view = 'home'
-            st.experimental_rerun()
         if st.button('🧴 Skin Assessment', use_container_width=True):
             st.session_state.view = 'assessment'
-            st.experimental_rerun()
         if st.button('✨ Results', use_container_width=True):
             st.session_state.view = 'results'
-            st.experimental_rerun()
         if st.button('🕒 Recent Recommendations', use_container_width=True):
             st.session_state.view = 'history'
-            st.experimental_rerun()
         if st.button('📚 Skincare Guide', use_container_width=True):
             st.session_state.view = 'guide'
-            st.experimental_rerun()
         if st.button('ℹ️ About', use_container_width=True):
             st.session_state.view = 'about'
-            st.experimental_rerun()
 
         st.markdown('---')
         stats = get_counts()
@@ -305,23 +299,22 @@ def render_home():
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">'
-        '<div><div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start with what matters</div>'
-        '<div style="color:#5f7f6d; line-height:1.75;">Choose your profile, review the recommended routine, and export only the products that match your needs.</div></div>'
-        '<div><button style="background: #5aa575; color: #ffffff; border:none; border-radius: 999px; padding: 0.85rem 1.4rem; font-weight: 700;">Ready to begin</button></div>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
+    cta_left, cta_right = st.columns([3, 1])
+    with cta_left:
+        st.markdown(
+            '<div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start with what matters</div>'
+            '<div style="color:#5f7f6d; line-height:1.75;">Choose your profile, review the recommended routine, and export only the products that match your needs.</div>',
+            unsafe_allow_html=True,
+        )
+    with cta_right:
+        if st.button('Ready to begin', use_container_width=True, key='home_ready'):
+            st.session_state.view = 'assessment'
+            return
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
     st.markdown('<strong>Disclaimer:</strong> Skinalyze delivers general skincare guidance only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
-
-    if st.button('Start Skin Assessment', use_container_width=False):
-        st.session_state.view = 'assessment'
-        st.experimental_rerun()
 
 
 def render_assessment():
@@ -394,7 +387,6 @@ def render_assessment():
             st.session_state.results_page_key = f'{selected_type}-{selected_issue}'
             add_history_entry(st.session_state.current_skin_type_name, st.session_state.current_skin_issue_name, len(results))
             st.session_state.view = 'results'
-            st.experimental_rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
