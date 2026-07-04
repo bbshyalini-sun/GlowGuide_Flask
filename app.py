@@ -187,17 +187,18 @@ def render_sidebar():
         if 'nav_radio' not in st.session_state or st.session_state.nav_radio not in NAV_LABELS:
             st.session_state.nav_radio = VIEW_TO_NAV.get(st.session_state.view, 'Home')
 
-        current_index = NAV_LABELS.index(VIEW_TO_NAV.get(st.session_state.view, "Home"))
+        current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
+
         nav = st.radio(
-            label='Navigation',
-            options=NAV_LABELS,
-            index=current_index,
-            format_func=lambda x: x,
-            key='nav_radio',
+            "Navigation",
+            NAV_LABELS,
+            index=NAV_LABELS.index(current_label),
         )
 
-        if NAV_TO_VIEW[nav] != st.session_state.view:
-            st.session_state.view = NAV_TO_VIEW[nav]
+        selected_view = NAV_TO_VIEW[nav]
+
+        if selected_view != st.session_state.view:
+            st.session_state.view = selected_view
             st.rerun()
 
         st.markdown('---')
@@ -253,7 +254,7 @@ def render_home():
             unsafe_allow_html=True,
         )
     with cta_right:
-        if st.button('Ready to begin', use_container_width=True, key='home_ready'):
+        if st.button('Ready to begin', use_container_width=True):
             set_view('assessment')
     st.markdown('</div>', unsafe_allow_html=True)
 
