@@ -169,8 +169,15 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 def set_view(view_name):
     """Switch the app to a named page view and keep sidebar state aligned."""
     st.session_state.view = view_name
-    if view_name in VIEW_TO_NAV:
-        st.session_state.nav_radio = VIEW_TO_NAV[view_name]
+    # Avoid writing to widget-backed session_state keys unconditionally here.
+    # The sidebar radio widget is created in `render_sidebar()`; updating
+    # `nav_radio` while the widget isn't present can cause Streamlit to
+    # raise a SessionState/Widget mismatch. Only update `nav_radio` if it
+    # already exists and the target label is valid.
+    if 'nav_radio' in st.session_state and view_name in VIEW_TO_NAV:
+        label = VIEW_TO_NAV[view_name]
+        if label in NAV_LABELS:
+            st.session_state.nav_radio = label
 
 
 def render_sidebar():
