@@ -24,81 +24,12 @@ PRIMARY = "#5aa575"
 PRIMARY_DARK = "#368160"
 ACCENT = "#78b094"
 
-st.markdown(
-    f"""
-    <style>
-        :root {{ color-scheme: light; }}
-        body {{ background: {APP_BACKGROUND}; }}
-        .stApp {{ background: {APP_BACKGROUND}; color: {TEXT}; }}
-        [data-testid="stAppViewContainer"] {{ background: {APP_BACKGROUND}; }}
-        [data-testid="stSidebar"] {{ background: #ffffff; border-right: 1px solid rgba(90, 165, 117, 0.18); }}
-        #MainMenu {{ visibility: hidden; }}
-        footer {{ visibility: hidden; }}
-        header {{ visibility: hidden; }}
-        [data-testid="collapsedControl"] {{ display: none !important; }}
-
-        .hero-panel {{
-            background: linear-gradient(180deg, rgba(123, 187, 152, 0.32), rgba(255,255,255,0.98));
-            border: 1px solid rgba(123, 187, 152, 0.4);
-            border-radius: 28px;
-            padding: 36px;
-            margin-bottom: 32px;
-            box-shadow: 0 20px 60px rgba(90,165,117,0.18);
-        }}
-        .hero-title {{ font-size: 3rem; font-weight: 800; margin: 0; color: {TEXT}; }}
-        .hero-subtitle {{ font-size: 1.05rem; color: {MUTED}; margin-top: 16px; max-width: 720px; }}
-        .section-card {{
-            background: {CARD_BACKGROUND};
-            border-radius: 22px;
-            padding: 28px;
-            border: 1px solid rgba(90, 165, 117, 0.18);
-            box-shadow: 0 16px 40px rgba(90, 165, 117, 0.08);
-            margin-bottom: 24px;
-        }}
-        .feature-card {{
-            background: {CARD_BACKGROUND};
-            padding: 22px;
-            border-radius: 22px;
-            border: 1px solid rgba(123, 187, 152, 0.25);
-            min-height: 180px;
-        }}
-        .feature-title {{ font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: {TEXT}; }}
-        .feature-copy {{ color: {MUTED}; line-height: 1.7; margin: 0; }}
-        .product-card {{
-            background: {CARD_BACKGROUND};
-            border-radius: 20px;
-            padding: 22px;
-            border: 1px solid rgba(123, 187, 152, 0.2);
-            margin-bottom: 18px;
-        }}
-        .product-title {{ margin: 0 0 8px 0; color: {TEXT}; font-size: 1.15rem; font-weight: 700; }}
-        .product-meta {{ color: {ACCENT}; margin-bottom: 12px; font-size: 0.95rem; letter-spacing: 0.01em; }}
-        .product-desc {{ color: {MUTED}; line-height: 1.7; margin: 0.35rem 0; font-size: 0.95rem; }}
-        .section-header {{ color: {TEXT}; margin-bottom: 14px; }}
-        .step-pill {{ display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(123, 187, 152, 0.3); color: {TEXT}; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }}
-        .step-pill.active {{ background: {PRIMARY}; color: #ffffff; }}
-        .disclaimer-card {{ background: rgba(123, 187, 152, 0.18); border-radius: 18px; padding: 20px; color: {TEXT}; border: 1px solid rgba(123, 187, 152, 0.32); }}
-        .metric-card {{ background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(123, 187, 152, 0.18); min-height: 120px; }}
-        .metric-value {{ font-size: 2rem; font-weight: 700; margin: 0; color: {TEXT}; }}
-        .metric-label {{ margin: 0; color: {MUTED}; font-size: 0.95rem; }}
-        .stButton > button, .stFormSubmitButton > button {{ background-color: {PRIMARY} !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.23) !important; }}
-        .stButton > button:hover, .stFormSubmitButton > button:hover {{ background-color: {PRIMARY_DARK} !important; }}
-
-        /* Main content container: responsive, centered, reads well on laptops */
-        .app-content {{
-            width: 70%;
-            max-width: 1100px;
-            margin: 0 auto;
-            box-sizing: border-box;
-            padding: 0 18px;
-        }}
-        @media (max-width: 900px) {{
-            .app-content {{ width: 92%; }}
-        }}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+css_path = os.path.join(os.path.dirname(__file__), 'assets', 'styles.css')
+try:
+    with open(css_path, 'r', encoding='utf-8') as _css_file:
+        st.markdown(f"<style>{_css_file.read()}</style>", unsafe_allow_html=True)
+except Exception as _err:
+    st.warning(f"Could not load styles from {css_path}: {_err}")
 
 st.markdown('<div style="height: 16px"></div>', unsafe_allow_html=True)
 
@@ -228,26 +159,39 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 def render_sidebar():
     with st.sidebar:
         st.markdown(
-            """
-            <div style='padding: 24px 0 14px 0;'>
-                <div style='font-size: 1.35rem; font-weight: 800; color: #10392e; margin-bottom: 6px;'>Skinalyze</div>
-                <div style='color: #5f7f6d; font-size: 0.95rem; line-height: 1.6;'>A cleaner, smarter way to build your skincare routine.</div>
+            f"""
+            <div style='padding: 18px 0 10px 0;'>
+                <div style='font-size: 1.2rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
+                <div style='color: {MUTED}; font-size: 0.9rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        if st.button('🏠 Home', use_container_width=True):
+        nav = st.radio(
+            label='Navigation',
+            options=['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us'],
+            index=0 if st.session_state.view == 'home' else
+                  1 if st.session_state.view == 'assessment' else
+                  2 if st.session_state.view == 'results' else
+                  3 if st.session_state.view == 'history' else
+                  4 if st.session_state.view == 'guide' else
+                  5,
+            format_func=lambda x: x,
+            key='nav_radio',
+        )
+
+        if nav == 'Home':
             st.session_state.view = 'home'
-        if st.button('🧴 Skin Assessment', use_container_width=True):
+        elif nav == 'Skin Assessment':
             st.session_state.view = 'assessment'
-        if st.button('✨ Results', use_container_width=True):
+        elif nav == 'Results':
             st.session_state.view = 'results'
-        if st.button('🕒 Recent Recommendations', use_container_width=True):
+        elif nav == 'Recent Recommendations':
             st.session_state.view = 'history'
-        if st.button('📚 Skincare Guide', use_container_width=True):
+        elif nav == 'Skincare Guide':
             st.session_state.view = 'guide'
-        if st.button('ℹ️ About', use_container_width=True):
+        elif nav == 'About Us':
             st.session_state.view = 'about'
 
         st.markdown('---')
@@ -282,41 +226,23 @@ def render_home():
     st.markdown('<div class="hero-subtitle">Skinalyze helps you with recommendations with product-focused clarity.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div class="section-header">What this experience provides</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">How to Begin?</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
+        '<ol style="color: #5f7f6d; font-size: 1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
         '<li>Select your skin type and main concern.</li>'
         '<li>See product suggestions grouped by routine category.</li>'
         '<li>Export only the items you want in a polished PDF.</li>'
-        '</ul>',
+        '</ol>',
         unsafe_allow_html=True,
     )
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown('<div class="feature-card">', unsafe_allow_html=True)
-        st.markdown('<div class="feature-title">Guided assessment</div>', unsafe_allow_html=True)
-        st.markdown('<p class="feature-copy">Answer a simple skin profile and get relevant recommendations without guesswork.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown('<div class="feature-card">', unsafe_allow_html=True)
-        st.markdown('<div class="feature-title">Clear results</div>', unsafe_allow_html=True)
-        st.markdown('<p class="feature-copy">View products by category with ingredient highlights and explanation notes.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown('<div class="feature-card">', unsafe_allow_html=True)
-        st.markdown('<div class="feature-title">Smart export</div>', unsafe_allow_html=True)
-        st.markdown('<p class="feature-copy">Select individual items or whole categories before exporting a professional summary.</p>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     cta_left, cta_right = st.columns([3, 1])
     with cta_left:
         st.markdown(
-            '<div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start with what matters</div>'
-            '<div style="color:#5f7f6d; line-height:1.75;">Choose your profile, review the recommended routine, and export only the products that match your needs.</div>',
+            '<div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start the Recommendation Process</div>'
+            '<div style="color:#5f7f6d; line-height:1.75;">Press the button to go to the assessment.</div>',
             unsafe_allow_html=True,
         )
     with cta_right:
@@ -332,16 +258,19 @@ def render_home():
 
 def render_assessment():
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
-    st.markdown('<div class="step-pill active">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-header">Complete a short assessment to see tailored skincare recommendations.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-pill active" role="status">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
+    st.progress(0.33)
+    st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1rem; color: #5f7f6d; line-height: 1.75; margin-bottom: 18px;">Use the options below to describe your skin and the issue you want to address first.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1rem; color: #5f7f6d; line-height: 1.6; margin-bottom: 18px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
         skin_issues = fetch_data('SELECT * FROM skin_issue ORDER BY issue_name')
     except Exception as err:
         st.error(f'Database error loading profile options. Please ensure skincare.db is available. {err}')
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
     with st.form('assessment_form'):
@@ -411,6 +340,7 @@ def render_results():
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
     st.markdown('<div class="step-pill active">Step 2 of 3: Review recommendations</div>', unsafe_allow_html=True)
@@ -434,6 +364,7 @@ def render_results():
 
     if not category_selection:
         st.warning('Pick at least one category to see recommendations.')
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
     visible_products = results[results['category_name'].isin(category_selection)]
@@ -490,25 +421,27 @@ def render_results():
         if category_products.empty:
             continue
 
-        st.markdown(f'### {category}')
-        for _, row in category_products.iterrows():
-            product_selected = row.product_id in st.session_state.selected_products
-            ingredient_text = row.active_ingredients if pd.notna(row.active_ingredients) else 'No ingredients listed.'
-            brand_text = row.brand if pd.notna(row.brand) else 'Trusted formula'
-            description = row.description if pd.notna(row.description) else 'No description available.'
+        with st.expander(f"{category} ({len(category_products)})", expanded=True):
+            for _, row in category_products.iterrows():
+                product_selected = row.product_id in st.session_state.selected_products
+                ingredient_text = row.active_ingredients if pd.notna(row.active_ingredients) else 'No ingredients listed.'
+                brand_text = row.brand if pd.notna(row.brand) else 'Trusted formula'
+                description = row.description if pd.notna(row.description) else 'No description available.'
 
-            st.markdown(
-                f"""
-                <div class="product-card">
-                    <div class="product-title">{row.product_name}</div>
-                    <div class="product-meta">{brand_text} • {row.category_name}</div>
-                    <p class="product-desc"><strong>Key ingredients:</strong> {ingredient_text}</p>
-                    <p class="product-desc"><strong>Why this is recommended:</strong> Matched to your skin type and concern.</p>
-                    <p class="product-desc">{description}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+                st.markdown(
+                    f"""
+                    <div class="product-card" role="group" aria-label="product">
+                        <div class="product-title">{row.product_name}</div>
+                        <div class="product-meta">{brand_text} • {row.category_name}</div>
+                        <p class="product-desc"><strong>Key ingredients:</strong> {ingredient_text}</p>
+                        <p class="product-desc"><strong>Why this is recommended:</strong> Matched to your skin type and concern.</p>
+                        <p class="product-desc">{description}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_history():
@@ -519,6 +452,7 @@ def render_history():
 
     if not st.session_state.history:
         st.info('No recent recommendations. Complete the skin assessment to generate your first routine.')
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
     rows = []
