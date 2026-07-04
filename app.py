@@ -156,6 +156,11 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 # ==========================================
 # 3. NAVIGATION
 # ==========================================
+def set_view(view_name):
+    """Switch the app to a named page view."""
+    st.session_state.view = view_name
+
+
 def render_sidebar():
     with st.sidebar:
         st.markdown(
@@ -168,31 +173,28 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
+        nav_labels = ['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us']
+        nav_to_view = {
+            'Home': 'home',
+            'Skin Assessment': 'assessment',
+            'Results': 'results',
+            'Recent Recommendations': 'history',
+            'Skincare Guide': 'guide',
+            'About Us': 'about',
+        }
+        current_index = nav_labels.index('Home')
+        if st.session_state.view in nav_to_view.values():
+            current_index = nav_labels.index(next(label for label, view in nav_to_view.items() if view == st.session_state.view))
+
         nav = st.radio(
             label='Navigation',
-            options=['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us'],
-            index=0 if st.session_state.view == 'home' else
-                  1 if st.session_state.view == 'assessment' else
-                  2 if st.session_state.view == 'results' else
-                  3 if st.session_state.view == 'history' else
-                  4 if st.session_state.view == 'guide' else
-                  5,
+            options=nav_labels,
+            index=current_index,
             format_func=lambda x: x,
             key='nav_radio',
         )
 
-        if nav == 'Home':
-            st.session_state.view = 'home'
-        elif nav == 'Skin Assessment':
-            st.session_state.view = 'assessment'
-        elif nav == 'Results':
-            st.session_state.view = 'results'
-        elif nav == 'Recent Recommendations':
-            st.session_state.view = 'history'
-        elif nav == 'Skincare Guide':
-            st.session_state.view = 'guide'
-        elif nav == 'About Us':
-            st.session_state.view = 'about'
+        set_view(nav_to_view[nav])
 
         st.markdown('---')
         stats = get_counts()
@@ -220,6 +222,7 @@ render_sidebar()
 # 4. PAGE RENDERERS
 # ==========================================
 def render_home():
+    """Landing page that introduces the app and directs users to start the assessment."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="hero-panel">', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">Welcome to Skinalyze</div>', unsafe_allow_html=True)
@@ -257,6 +260,7 @@ def render_home():
 
 
 def render_assessment():
+    """Collects the user's skin type and concern before running the recommendation query."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active" role="status">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
     st.progress(0.33)
@@ -305,6 +309,7 @@ def render_assessment():
             st.session_state.current_skin_type_name = skin_types.loc[skin_types['skin_type_id'] == selected_type, 'skin_type_name'].values[0]
             st.session_state.current_skin_issue_name = skin_issues.loc[skin_issues['issue_id'] == selected_issue, 'issue_name'].values[0]
 
+            # Recommendation logic: match products to the chosen skin type and concern.
             query = '''
                 SELECT
                     p.product_id,
@@ -329,13 +334,14 @@ def render_assessment():
             st.session_state.selected_categories = results['category_name'].unique().tolist() if not results.empty else []
             st.session_state.results_page_key = f'{selected_type}-{selected_issue}'
             add_history_entry(st.session_state.current_skin_type_name, st.session_state.current_skin_issue_name, len(results))
-            st.session_state.view = 'results'
+            set_view('results')
 
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 
 def render_results():
+    """Shows the filtered recommendation results and lets the user select products for export."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     results = st.session_state.recommendations
     if results.empty:
@@ -445,6 +451,7 @@ def render_results():
 
 
 def render_history():
+    """Displays recent recommendation sessions from the last 24 hours."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     update_history()
     st.markdown('<div class="step-pill active">Recent recommendations</div>', unsafe_allow_html=True)
@@ -470,6 +477,7 @@ def render_history():
 
 
 def render_guide():
+    """Educational page explaining common skin types, concerns, and routine tips."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active">Skincare guide</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Understand skin types, concerns, and routine essentials.</div>', unsafe_allow_html=True)
@@ -517,6 +525,7 @@ def render_guide():
 
 
 def render_about():
+    """Explains how the recommendation engine works and the tools behind the app."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active">About Skinalyze</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Why this system exists and how it works.</div>', unsafe_allow_html=True)
@@ -559,17 +568,17 @@ def render_about():
 # ==========================================
 # 5. ROUTE PAGES
 # ==========================================
-if st.session_state.view == 'home':
-    render_home()
-elif st.session_state.view == 'assessment':
-    render_assessment()
-elif st.session_state.view == 'results':
-    render_results()
-elif st.session_state.view == 'history':
-    render_history()
-elif st.session_state.view == 'guide':
-    render_guide()
-elif st.session_state.view == 'about':
-    render_about()
-else:
-    render_home()
+def render_current_page():
+    """Dispatches the current session view to the appropriate page renderer."""
+    page_renderers = {
+        'home': render_home,
+        'assessment': render_assessment,
+        'results': render_results,
+        'history': render_history,
+        'guide': render_guide,
+        'about': render_about,
+    }
+    page_renderers.get(st.session_state.view, render_home)()
+
+
+render_current_page()
