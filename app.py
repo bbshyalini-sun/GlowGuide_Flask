@@ -23,6 +23,16 @@ MUTED = "#5f7f6d"
 PRIMARY = "#5aa575"
 PRIMARY_DARK = "#368160"
 ACCENT = "#78b094"
+NAV_LABELS = ['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us']
+NAV_TO_VIEW = {
+    'Home': 'home',
+    'Skin Assessment': 'assessment',
+    'Results': 'results',
+    'Recent Recommendations': 'history',
+    'Skincare Guide': 'guide',
+    'About Us': 'about',
+}
+VIEW_TO_NAV = {view: label for label, view in NAV_TO_VIEW.items()}
 
 css_path = os.path.join(os.path.dirname(__file__), 'assets', 'styles.css')
 try:
@@ -157,8 +167,10 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 # 3. NAVIGATION
 # ==========================================
 def set_view(view_name):
-    """Switch the app to a named page view."""
+    """Switch the app to a named page view and keep sidebar state aligned."""
     st.session_state.view = view_name
+    if view_name in VIEW_TO_NAV:
+        st.session_state.nav_radio = VIEW_TO_NAV[view_name]
 
 
 def render_sidebar():
@@ -173,28 +185,21 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-        nav_labels = ['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us']
-        nav_to_view = {
-            'Home': 'home',
-            'Skin Assessment': 'assessment',
-            'Results': 'results',
-            'Recent Recommendations': 'history',
-            'Skincare Guide': 'guide',
-            'About Us': 'about',
-        }
-        current_index = nav_labels.index('Home')
-        if st.session_state.view in nav_to_view.values():
-            current_index = nav_labels.index(next(label for label, view in nav_to_view.items() if view == st.session_state.view))
+        if 'nav_radio' not in st.session_state or st.session_state.nav_radio not in NAV_LABELS:
+            st.session_state.nav_radio = VIEW_TO_NAV.get(st.session_state.view, 'Home')
 
+        current_index = NAV_LABELS.index(st.session_state.nav_radio)
         nav = st.radio(
             label='Navigation',
-            options=nav_labels,
+            options=NAV_LABELS,
             index=current_index,
             format_func=lambda x: x,
             key='nav_radio',
         )
 
-        set_view(nav_to_view[nav])
+        if nav != st.session_state.nav_radio:
+            st.session_state.nav_radio = nav
+            set_view(NAV_TO_VIEW[nav])
 
         st.markdown('---')
         stats = get_counts()
@@ -250,7 +255,7 @@ def render_home():
         )
     with cta_right:
         if st.button('Ready to begin', use_container_width=True, key='home_ready'):
-            st.session_state.view = 'assessment'
+            set_view('assessment')
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
