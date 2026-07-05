@@ -267,7 +267,7 @@ def render_home():
 def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
-    st.markdown('<div class="step-pill active" role="status">Step 1 of 3: Profile your skin</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
