@@ -301,9 +301,8 @@ def render_assessment():
             help='Pick the skin issue you want to address first.',
         )
 
-        st.markdown('<div style="color: #5f7f6d; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
 
-        submitted = st.form_submit_button('Review recommendations')
+        submitted = st.form_submit_button('Get recommendations')
 
         if submitted:
             if selected_type is None or selected_issue is None:
