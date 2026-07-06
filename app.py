@@ -259,7 +259,7 @@ def render_home():
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
-    st.markdown('<strong>Disclaimer:</strong> Skinalyze delivers general skincare guidance only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
+    st.markdown('<strong>Disclaimer:</strong> Skinalyze delivers general skincare recommendations only. It does not replace medical advice. For complex skin conditions, consult a licensed dermatologist.', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
