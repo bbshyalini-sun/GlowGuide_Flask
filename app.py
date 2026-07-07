@@ -268,6 +268,11 @@ def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
+
+    # Added navigation button
+    if st.button("← Back to Homepage", key="back_to_home_assess"):
+        set_view('home')
+
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -348,6 +353,11 @@ def render_assessment():
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
+
+    # Added navigation button
+    if st.button("← Back to Homepage", key="back_to_home_assess"):
+        set_view('home')
+
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
