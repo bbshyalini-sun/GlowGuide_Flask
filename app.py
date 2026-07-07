@@ -177,53 +177,23 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 # 3. NAVIGATION
 # ==========================================
 def set_view(view_name):
-    """Switch pages safely without modifying widget-backed session state."""
+    """Switch pages safely and sync the sidebar widget."""
     st.session_state.view = view_name
-    st.rerun()
-
-# Keep the sidebar radio button synced with button clicks!
+    
+    # Keep the sidebar radio button synced with button clicks!
     target_label = VIEW_TO_NAV.get(view_name)
     if target_label in SIDEBAR_LABELS:
         st.session_state.nav_radio = target_label
     else:
-        st.session_state.nav_radio = None # Clear selection for hidden pages (like Results)
+        st.session_state.nav_radio = None # Clear selection for hidden pages
         
     st.rerun()
 
-def render_sidebar():
-    with st.sidebar:
-        st.markdown(
-            f"""
-            <div style='padding: 18px 0 10px 0;'>
-                <div style='font-size: 1.2rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
-                <div style='color: {MUTED}; font-size: 0.9rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
-
-        # Determine initial visual highlight index and keep the sidebar stable.
-        # If the view isn't in the sidebar (like 'Results'), we set index=None 
-        # so it doesn't force a redirection when interacting with widgets on the page.
-        if current_label in SIDEBAR_LABELS:
-            initial_idx = SIDEBAR_LABELS.index(current_label)
-        else:
-            initial_idx = None 
-
-        nav = st.radio(
-            "Navigation",
-            SIDEBAR_LABELS,
-            index=initial_idx,
-            key="nav_radio"
-        )
-
-        def handle_nav_change():
-            """Triggered only when the user explicitly clicks the sidebar menu."""
-            selected_label = st.session_state.nav_radio
-            if selected_label:
-                st.session_state.view = NAV_TO_VIEW[selected_label]
+def handle_nav_change():
+    """Triggered only when the user explicitly clicks the sidebar menu."""
+    selected_label = st.session_state.nav_radio
+    if selected_label:
+        st.session_state.view = NAV_TO_VIEW[selected_label]
 
 def render_sidebar():
     with st.sidebar:
@@ -237,31 +207,12 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-        # Simplified radio widget using on_change callback
         st.radio(
             "Navigation",
             SIDEBAR_LABELS,
             index=None,
             key="nav_radio",
             on_change=handle_nav_change
-        )
-
-        st.markdown('---')
-        stats = get_counts()
-        st.markdown(
-            f"""
-            <div style='display:flex; gap: 12px; flex-wrap: wrap;'>
-                <div style='background: rgba(123, 187, 152, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.2rem;'>{stats['products']}</div>
-                    <div style='color:{MUTED}; font-size:0.9rem;'>Products</div>
-                </div>
-                <div style='background: rgba(90, 165, 117, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.2rem;'>{stats['categories']}</div>
-                    <div style='color:{MUTED}; font-size:0.9rem;'>Categories</div>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
         )
 
         st.markdown('---')
