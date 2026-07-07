@@ -465,40 +465,6 @@ def render_results():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-def render_latest_assessment():
-    """Displays the most recent assessment input choices along with the recommended product outputs."""
-    st.markdown('<div class="app-content">', unsafe_allow_html=True)
-    st.markdown('<div class="step-pill active">Latest Assessment Summary</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-header">Recent Input & Output Log</div>', unsafe_allow_html=True)
-    
-    results = st.session_state.recommendations
-    skin_type = st.session_state.get('current_skin_type_name', None)
-    skin_issue = st.session_state.get('current_skin_issue_name', None)
-    user_name = st.session_state.get('user_name', 'Guest')
-    
-    if results.empty or not skin_type or not skin_issue:
-        st.info('No active assessment data found. Please navigate to the "Skin Assessment" page to generate your custom routine.')
-        st.markdown('</div>', unsafe_allow_html=True)
-        return
-        
-    st.markdown('### 📥 Recent Inputs')
-    st.markdown(f"""
-    <div class="section-card">
-        <p style="margin: 4px 0;"><strong>Profile Name:</strong> {user_name}</p>
-        <p style="margin: 4px 0;"><strong>Skin Type selected:</strong> {skin_type}</p>
-        <p style="margin: 4px 0;"><strong>Primary Concern selected:</strong> {skin_issue}</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown('### 📤 Corresponding Outputs')
-    st.markdown(f"The system matched **{len(results)}** products for this profile setup:")
-    
-    summary_df = results[['product_name', 'brand', 'category_name', 'active_ingredients']].copy()
-    summary_df.columns = ['Product Name', 'Brand', 'Category', 'Key Ingredients']
-    st.dataframe(summary_df, use_container_width=True, hide_index=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)    
-
 
 def render_history():
     """Displays recent recommendation sessions from the last 24 hours."""
