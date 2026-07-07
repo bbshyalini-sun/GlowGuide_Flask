@@ -220,10 +220,10 @@ def render_sidebar():
         )
 
         def handle_nav_change():
-    """Triggered only when the user explicitly clicks the sidebar menu."""
-    selected_label = st.session_state.nav_radio
-    if selected_label:
-        st.session_state.view = NAV_TO_VIEW[selected_label]
+            """Triggered only when the user explicitly clicks the sidebar menu."""
+            selected_label = st.session_state.nav_radio
+            if selected_label:
+                st.session_state.view = NAV_TO_VIEW[selected_label]
 
 def render_sidebar():
     with st.sidebar:
