@@ -34,8 +34,8 @@ NAV_TO_VIEW = {
 }
 VIEW_TO_NAV = {view: label for label, view in NAV_TO_VIEW.items()}
 
-# Sidebar only shows these links (Explicitly excluding the 'Results' page)
-SIDEBAR_LABELS = ['Home', 'Skin Assessment', 'Latest Assessment', 'Recent Recommendations', 'Skincare Guide', 'About Us']
+# Sidebar only shows the main app pages; unsupported items should not break navigation.
+SIDEBAR_LABELS = ['Home', 'Skin Assessment', 'Recent Recommendations', 'Skincare Guide', 'About Us']
 
 css_path = os.path.join(os.path.dirname(__file__), 'assets', 'styles.css')
 try:
@@ -187,27 +187,24 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-        if 'nav_radio' not in st.session_state or st.session_state.nav_radio not in NAV_LABELS:
-            st.session_state.nav_radio = VIEW_TO_NAV.get(st.session_state.view, 'Home')
-
         current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
 
-        # Determine initial visual highlight index
+        # Determine initial visual highlight index and keep the sidebar stable.
         if current_label in SIDEBAR_LABELS:
             initial_idx = SIDEBAR_LABELS.index(current_label)
         else:
-            initial_idx = None  # No selection highlighted if on 'results' page
+            initial_idx = 0
 
         nav = st.radio(
             "Navigation",
             SIDEBAR_LABELS,
             index=initial_idx,
-            key="nav_radio_widget"
+            key="nav_radio"
         )
 
         if nav is not None:
-            selected_view = NAV_TO_VIEW[nav]
-            if selected_view != st.session_state.view:
+            selected_view = NAV_TO_VIEW.get(nav)
+            if selected_view and selected_view != st.session_state.view:
                 st.session_state.view = selected_view
                 st.rerun()
 
@@ -370,6 +367,11 @@ def render_results():
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+
+    if 'current_skin_type_name' not in st.session_state or 'current_skin_issue_name' not in st.session_state:
+        st.warning('The assessment details are missing. Please start a new recommendation from the assessment page.')
         st.markdown('</div>', unsafe_allow_html=True)
         return
 
