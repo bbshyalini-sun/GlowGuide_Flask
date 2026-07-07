@@ -23,7 +23,6 @@ MUTED = "#5f7f6d"
 PRIMARY = "#5aa575"
 PRIMARY_DARK = "#368160"
 ACCENT = "#78b094"
-
 NAV_LABELS = ['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us']
 NAV_TO_VIEW = {
     'Home': 'home',
@@ -35,9 +34,6 @@ NAV_TO_VIEW = {
 }
 VIEW_TO_NAV = {view: label for label, view in NAV_TO_VIEW.items()}
 
-# Sidebar only shows the main app pages; unsupported items should not break navigation.
-SIDEBAR_LABELS = ['Home', 'Skin Assessment', 'Recent Recommendations', 'Skincare Guide', 'About Us']
-
 css_path = os.path.join(os.path.dirname(__file__), 'assets', 'styles.css')
 try:
     with open(css_path, 'r', encoding='utf-8') as _css_file:
@@ -47,14 +43,11 @@ except Exception as _err:
 
 st.markdown('<div style="height: 16px"></div>', unsafe_allow_html=True)
 
-
 # ==========================================
 # 2. SESSION STATE & DATABASE HELPERS
 # ==========================================
 if 'view' not in st.session_state:
     st.session_state.view = 'home'
-if 'nav_radio' not in st.session_state:
-    st.session_state.nav_radio = 'Home' # Add this line!
 if 'recommendations' not in st.session_state:
     st.session_state.recommendations = pd.DataFrame()
 if 'history' not in st.session_state:
@@ -79,20 +72,17 @@ def fetch_data(query, params=()):
 
 @st.cache_data
 def get_counts():
-    try:
-        conn = get_connection()
-        product_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM product', conn).iloc[0, 0]
-        category_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM category', conn).iloc[0, 0]
-        skin_type_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_type', conn).iloc[0, 0]
-        skin_issue_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_issue', conn).iloc[0, 0]
-        return {
-            'products': int(product_count),
-            'categories': int(category_count),
-            'types': int(skin_type_count),
-            'issues': int(skin_issue_count),
-        }
-    except Exception:
-        return {'products': 0, 'categories': 0, 'types': 0, 'issues': 0}
+    conn = get_connection()
+    product_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM product', conn).iloc[0, 0]
+    category_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM category', conn).iloc[0, 0]
+    skin_type_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_type', conn).iloc[0, 0]
+    skin_issue_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_issue', conn).iloc[0, 0]
+    return {
+        'products': int(product_count),
+        'categories': int(category_count),
+        'types': int(skin_type_count),
+        'issues': int(skin_issue_count),
+    }
 
 
 def update_history():
@@ -177,23 +167,10 @@ def generate_pdf(user_name, skin_type, skin_issue, results):
 # 3. NAVIGATION
 # ==========================================
 def set_view(view_name):
-    """Switch pages safely and sync the sidebar widget."""
+    """Switch pages safely without modifying widget-backed session state."""
     st.session_state.view = view_name
-    
-    # Keep the sidebar radio button synced with button clicks!
-    target_label = VIEW_TO_NAV.get(view_name)
-    if target_label in SIDEBAR_LABELS:
-        st.session_state.nav_radio = target_label
-    else:
-        st.session_state.nav_radio = None # Clear selection for hidden pages
-        
     st.rerun()
 
-def handle_nav_change():
-    """Triggered only when the user explicitly clicks the sidebar menu."""
-    selected_label = st.session_state.nav_radio
-    if selected_label:
-        st.session_state.view = NAV_TO_VIEW[selected_label]
 
 def render_sidebar():
     with st.sidebar:
@@ -207,13 +184,22 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-        st.radio(
+        if 'nav_radio' not in st.session_state or st.session_state.nav_radio not in NAV_LABELS:
+            st.session_state.nav_radio = VIEW_TO_NAV.get(st.session_state.view, 'Home')
+
+        current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
+
+        nav = st.radio(
             "Navigation",
-            SIDEBAR_LABELS,
-            index=None,
-            key="nav_radio",
-            on_change=handle_nav_change
+            NAV_LABELS,
+            index=NAV_LABELS.index(current_label),
         )
+
+        selected_view = NAV_TO_VIEW[nav]
+
+        if selected_view != st.session_state.view:
+            st.session_state.view = selected_view
+            st.rerun()
 
         st.markdown('---')
         stats = get_counts()
@@ -232,6 +218,7 @@ def render_sidebar():
             """,
             unsafe_allow_html=True,
         )
+
 
 render_sidebar()
 
@@ -257,6 +244,7 @@ def render_home():
         unsafe_allow_html=True,
     )
 
+
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     cta_left, cta_right = st.columns([3, 1])
     with cta_left:
@@ -279,11 +267,6 @@ def render_home():
 def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
-
-    # Added navigation button
-    if st.button("← Back to Homepage", key="back_to_home_assess"):
-        set_view('home')
-
     st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
@@ -318,7 +301,9 @@ def render_assessment():
             help='Pick the skin issue you want to address first.',
         )
 
-        submitted = st.form_submit_button('Get recommendations')
+        st.markdown('<div style="color: #5f7f6d; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
+
+        submitted = st.form_submit_button('Review recommendations')
 
         if submitted:
             if selected_type is None or selected_issue is None:
@@ -363,19 +348,9 @@ def render_assessment():
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
-
-    # Added navigation button
-    if st.button("← Back to Homepage", key="back_to_home_results"):
-        set_view('home')
-
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
-        st.markdown('</div>', unsafe_allow_html=True)
-        return
-
-    if 'current_skin_type_name' not in st.session_state or 'current_skin_issue_name' not in st.session_state:
-        st.warning('The assessment details are missing. Please start a new recommendation from the assessment page.')
         st.markdown('</div>', unsafe_allow_html=True)
         return
 
@@ -385,23 +360,18 @@ def render_results():
     st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
-    
-    # Initialize the page states strictly if the assessment has just been updated
     if st.session_state.results_page_key != expected_key:
         st.session_state.selected_products = results['product_id'].tolist()
         st.session_state.selected_categories = results['category_name'].unique().tolist()
         st.session_state.results_page_key = expected_key
 
     product_categories = results['category_name'].unique().tolist()
-    
     category_selection = st.multiselect(
         'Show categories',
         options=product_categories,
-        default=st.session_state.selected_categories,
+        default=st.session_state.selected_categories or product_categories,
         help='Filter which product cards are visible.',
     )
-    # Save the categories user selected to session state to persist through UI interactions
-    st.session_state.selected_categories = category_selection
 
     if not category_selection:
         st.warning('Pick at least one category to see recommendations.')
@@ -409,6 +379,14 @@ def render_results():
         return
 
     visible_products = results[results['category_name'].isin(category_selection)]
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        if st.button('Select all products'):
+            st.session_state.selected_products = results['product_id'].tolist()
+    with col2:
+        if st.button('Clear selections'):
+            st.session_state.selected_products = []
 
     selected_ids = set(st.session_state.selected_products)
     for _, row in visible_products.iterrows():
@@ -456,6 +434,7 @@ def render_results():
 
         with st.expander(f"{category} ({len(category_products)})", expanded=True):
             for _, row in category_products.iterrows():
+                product_selected = row.product_id in st.session_state.selected_products
                 ingredient_text = row.active_ingredients if pd.notna(row.active_ingredients) else 'No ingredients listed.'
                 brand_text = row.brand if pd.notna(row.brand) else 'Trusted formula'
                 description = row.description if pd.notna(row.description) else 'No description available.'
@@ -575,37 +554,3 @@ def render_about():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="font-weight:700; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
-    st.markdown(
-        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
-        '<li>Streamlit for interface and navigation.</li>'
-        '<li>SQLite for light product and profile data storage.</li>'
-        '<li>ReportLab to generate export-ready PDF summaries.</li>'
-        '</ul>',
-        unsafe_allow_html=True,
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
-    st.markdown('<strong>Note:</strong> This service offers general skincare suggestions and is not a substitute for professional medical advice.', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
-# ==========================================
-# 5. ROUTE PAGES
-# ==========================================
-def render_current_page():
-    """Dispatches the current session view to the appropriate page renderer."""
-    page_renderers = {
-        'home': render_home,
-        'assessment': render_assessment,
-        'results': render_results,
-        'history': render_history,
-        'guide': render_guide,
-        'about': render_about,
-    }
-    page_renderers.get(st.session_state.view, render_home)()
-
-
-render_current_page()
-render_sidebar()
