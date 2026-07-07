@@ -267,6 +267,11 @@ def render_home():
 def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
+
+    # Added navigation button
+    if st.button("← Back to Homepage", key="back_to_home_assess"):
+        set_view('home')
+
     st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
@@ -347,6 +352,11 @@ def render_assessment():
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
+
+    # Added navigation button
+    if st.button("← Back to Homepage", key="back_to_home_results"):
+        set_view('home')
+
     results = st.session_state.recommendations
     if results.empty:
         st.warning('No recommendations are available yet. Please complete the assessment first.')
@@ -378,14 +388,6 @@ def render_results():
         return
 
     visible_products = results[results['category_name'].isin(category_selection)]
-
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        if st.button('Select all products'):
-            st.session_state.selected_products = results['product_id'].tolist()
-    with col2:
-        if st.button('Clear selections'):
-            st.session_state.selected_products = []
 
     selected_ids = set(st.session_state.selected_products)
     for _, row in visible_products.iterrows():
