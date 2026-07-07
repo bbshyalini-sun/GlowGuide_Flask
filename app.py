@@ -554,3 +554,36 @@ def render_about():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="font-weight:700; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
+        '<li>Streamlit for interface and navigation.</li>'
+        '<li>SQLite for light product and profile data storage.</li>'
+        '<li>ReportLab to generate export-ready PDF summaries.</li>'
+        '</ul>',
+        unsafe_allow_html=True,
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="disclaimer-card">', unsafe_allow_html=True)
+    st.markdown('<strong>Note:</strong> This service offers general skincare suggestions and is not a substitute for professional medical advice.', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+# ==========================================
+# 5. ROUTE PAGES
+# ==========================================
+def render_current_page():
+    """Dispatches the current session view to the appropriate page renderer."""
+    page_renderers = {
+        'home': render_home,
+        'assessment': render_assessment,
+        'results': render_results,
+        'history': render_history,
+        'guide': render_guide,
+        'about': render_about,
+    }
+    page_renderers.get(st.session_state.view, render_home)()
+
+
+render_current_page()
