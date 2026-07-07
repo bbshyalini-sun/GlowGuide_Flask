@@ -34,6 +34,9 @@ NAV_TO_VIEW = {
 }
 VIEW_TO_NAV = {view: label for label, view in NAV_TO_VIEW.items()}
 
+# Sidebar only shows these links (Explicitly excluding the 'Results' page)
+SIDEBAR_LABELS = ['Home', 'Skin Assessment', 'Latest Assessment', 'Recent Recommendations', 'Skincare Guide', 'About Us']
+
 css_path = os.path.join(os.path.dirname(__file__), 'assets', 'styles.css')
 try:
     with open(css_path, 'r', encoding='utf-8') as _css_file:
@@ -189,17 +192,24 @@ def render_sidebar():
 
         current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
 
+        # Determine initial visual highlight index
+        if current_label in SIDEBAR_LABELS:
+            initial_idx = SIDEBAR_LABELS.index(current_label)
+        else:
+            initial_idx = None  # No selection highlighted if on 'results' page
+
         nav = st.radio(
             "Navigation",
-            NAV_LABELS,
-            index=NAV_LABELS.index(current_label),
+            SIDEBAR_LABELS,
+            index=initial_idx,
+            key="nav_radio_widget"
         )
 
-        selected_view = NAV_TO_VIEW[nav]
-
-        if selected_view != st.session_state.view:
-            st.session_state.view = selected_view
-            st.rerun()
+        if nav is not None:
+            selected_view = NAV_TO_VIEW[nav]
+            if selected_view != st.session_state.view:
+                st.session_state.view = selected_view
+                st.rerun()
 
         st.markdown('---')
         stats = get_counts()
@@ -454,6 +464,40 @@ def render_results():
                 )
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+def render_latest_assessment():
+    """Displays the most recent assessment input choices along with the recommended product outputs."""
+    st.markdown('<div class="app-content">', unsafe_allow_html=True)
+    st.markdown('<div class="step-pill active">Latest Assessment Summary</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Recent Input & Output Log</div>', unsafe_allow_html=True)
+    
+    results = st.session_state.recommendations
+    skin_type = st.session_state.get('current_skin_type_name', None)
+    skin_issue = st.session_state.get('current_skin_issue_name', None)
+    user_name = st.session_state.get('user_name', 'Guest')
+    
+    if results.empty or not skin_type or not skin_issue:
+        st.info('No active assessment data found. Please navigate to the "Skin Assessment" page to generate your custom routine.')
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
+        
+    st.markdown('### 📥 Recent Inputs')
+    st.markdown(f"""
+    <div class="section-card">
+        <p style="margin: 4px 0;"><strong>Profile Name:</strong> {user_name}</p>
+        <p style="margin: 4px 0;"><strong>Skin Type selected:</strong> {skin_type}</p>
+        <p style="margin: 4px 0;"><strong>Primary Concern selected:</strong> {skin_issue}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('### 📤 Corresponding Outputs')
+    st.markdown(f"The system matched **{len(results)}** products for this profile setup:")
+    
+    summary_df = results[['product_name', 'brand', 'category_name', 'active_ingredients']].copy()
+    summary_df.columns = ['Product Name', 'Brand', 'Category', 'Key Ingredients']
+    st.dataframe(summary_df, use_container_width=True, hide_index=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)    
 
 
 def render_history():
