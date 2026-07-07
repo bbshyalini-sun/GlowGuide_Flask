@@ -608,3 +608,4 @@ def render_current_page():
 
 
 render_current_page()
+render_sidebar()
