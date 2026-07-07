@@ -23,6 +23,7 @@ MUTED = "#5f7f6d"
 PRIMARY = "#5aa575"
 PRIMARY_DARK = "#368160"
 ACCENT = "#78b094"
+
 NAV_LABELS = ['Home', 'Skin Assessment', 'Results', 'Recent Recommendations', 'Skincare Guide', 'About Us']
 NAV_TO_VIEW = {
     'Home': 'home',
@@ -45,6 +46,7 @@ except Exception as _err:
     st.warning(f"Could not load styles from {css_path}: {_err}")
 
 st.markdown('<div style="height: 16px"></div>', unsafe_allow_html=True)
+
 
 # ==========================================
 # 2. SESSION STATE & DATABASE HELPERS
@@ -75,17 +77,20 @@ def fetch_data(query, params=()):
 
 @st.cache_data
 def get_counts():
-    conn = get_connection()
-    product_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM product', conn).iloc[0, 0]
-    category_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM category', conn).iloc[0, 0]
-    skin_type_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_type', conn).iloc[0, 0]
-    skin_issue_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_issue', conn).iloc[0, 0]
-    return {
-        'products': int(product_count),
-        'categories': int(category_count),
-        'types': int(skin_type_count),
-        'issues': int(skin_issue_count),
-    }
+    try:
+        conn = get_connection()
+        product_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM product', conn).iloc[0, 0]
+        category_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM category', conn).iloc[0, 0]
+        skin_type_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_type', conn).iloc[0, 0]
+        skin_issue_count = pd.read_sql_query('SELECT COUNT(*) AS total FROM skin_issue', conn).iloc[0, 0]
+        return {
+            'products': int(product_count),
+            'categories': int(category_count),
+            'types': int(skin_type_count),
+            'issues': int(skin_issue_count),
+        }
+    except Exception:
+        return {'products': 0, 'categories': 0, 'types': 0, 'issues': 0}
 
 
 def update_history():
@@ -190,10 +195,12 @@ def render_sidebar():
         current_label = VIEW_TO_NAV.get(st.session_state.view, "Home")
 
         # Determine initial visual highlight index and keep the sidebar stable.
+        # If the view isn't in the sidebar (like 'Results'), we set index=None 
+        # so it doesn't force a redirection when interacting with widgets on the page.
         if current_label in SIDEBAR_LABELS:
             initial_idx = SIDEBAR_LABELS.index(current_label)
         else:
-            initial_idx = 0
+            initial_idx = None 
 
         nav = st.radio(
             "Navigation",
@@ -226,7 +233,6 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-
 render_sidebar()
 
 
@@ -250,7 +256,6 @@ def render_home():
         '</ol>',
         unsafe_allow_html=True,
     )
-
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     cta_left, cta_right = st.columns([3, 1])
@@ -312,7 +317,6 @@ def render_assessment():
             format_func=lambda value: 'Choose primary concern' if value is None else skin_issues.loc[skin_issues['issue_id'] == value, 'issue_name'].values[0],
             help='Pick the skin issue you want to address first.',
         )
-
 
         submitted = st.form_submit_button('Get recommendations')
 
@@ -381,18 +385,23 @@ def render_results():
     st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
+    
+    # Initialize the page states strictly if the assessment has just been updated
     if st.session_state.results_page_key != expected_key:
         st.session_state.selected_products = results['product_id'].tolist()
         st.session_state.selected_categories = results['category_name'].unique().tolist()
         st.session_state.results_page_key = expected_key
 
     product_categories = results['category_name'].unique().tolist()
+    
     category_selection = st.multiselect(
         'Show categories',
         options=product_categories,
-        default=st.session_state.selected_categories or product_categories,
+        default=st.session_state.selected_categories,
         help='Filter which product cards are visible.',
     )
+    # Save the categories user selected to session state to persist through UI interactions
+    st.session_state.selected_categories = category_selection
 
     if not category_selection:
         st.warning('Pick at least one category to see recommendations.')
@@ -447,7 +456,6 @@ def render_results():
 
         with st.expander(f"{category} ({len(category_products)})", expanded=True):
             for _, row in category_products.iterrows():
-                product_selected = row.product_id in st.session_state.selected_products
                 ingredient_text = row.active_ingredients if pd.notna(row.active_ingredients) else 'No ingredients listed.'
                 brand_text = row.brand if pd.notna(row.brand) else 'Trusted formula'
                 description = row.description if pd.notna(row.description) else 'No description available.'
