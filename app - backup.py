@@ -339,19 +339,6 @@ def render_assessment():
                 ORDER BY c.category_id ASC, p.product_name ASC
             '''
             results = fetch_data(query, (selected_type, selected_issue))
-
-            # -------------------------------------------------------------
-            # ADD THESE DIAGNOSTIC LINES FOR SYSTEM VALIDATION LOGGING:
-            # -------------------------------------------------------------
-            actual_query_count = len(results)
-
-            # Option A: Prints the actual count safely to your IDE terminal window
-            print(f"--- VALIDATION LOG --- Profile: {st.session_state.current_skin_type_name} + {st.session_state.current_skin_issue_name} | Actual Count: {actual_query_count}")
-
-            # Option B: Renders the count right on the screen for your verification notes
-            st.toast(f"✅ Query complete. Found {actual_query_count} matching products.")
-            # -------------------------------------------------------------
-
             st.session_state.recommendations = results
             st.session_state.selected_products = results['product_id'].tolist()
             st.session_state.selected_categories = results['category_name'].unique().tolist() if not results.empty else []
