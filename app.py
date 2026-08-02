@@ -361,7 +361,6 @@ def render_home():
     )
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    # Tightened ratio from [3, 1] to [1.8, 1] with gap="small" to bring button 30%+ closer
     cta_left, cta_right = st.columns([1.8, 1], gap="small")
     with cta_left:
         st.markdown(
@@ -382,16 +381,37 @@ def render_home():
 
 def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
-    st.markdown('<div class="app-content">', unsafe_allow_html=True)
-    st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
+    # Override assessment page text to pure black (except inside input boxes and buttons)
+    st.markdown(
+        """
+        <style>
+            .assessment-container,
+            .assessment-container .section-header,
+            .assessment-container .step-pill,
+            .assessment-container h1,
+            .assessment-container h2,
+            .assessment-container h3,
+            .assessment-container p,
+            .assessment-container label,
+            .assessment-container .stMarkdown,
+            .assessment-container .stMarkdown * {
+                color: #000000 !important;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="app-content assessment-container">', unsafe_allow_html=True)
+    st.markdown('<div class="step-pill active" role="status" style="color: #000000 !important;">Step 1: Profile your skin</div>', unsafe_allow_html=True)
 
     if st.button("← Back to Homepage", key="back_to_home_assess"):
         set_view('home')
 
     st.progress(0.33)
-    st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header" style="color: #000000 !important;">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1.38rem; color: #5f7f6d; line-height: 1.5; margin-bottom: 8px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1.38rem; color: #000000; line-height: 1.5; margin-bottom: 8px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
@@ -403,25 +423,27 @@ def render_assessment():
         return
 
     with st.form('assessment_form'):
-        st.text_input('Profile name (optional)', key='profile_name', help='Add a short label so you can recognize this routine later.')
+        st.text_input('Profile name (optional)', key='profile_name', label_visibility="collapsed", help='Add a short label so you can recognize this routine later.')
 
-        st.markdown('### Your skin type')
+        st.markdown('<h3 style="color: #000000 !important;">Your skin type</h3>', unsafe_allow_html=True)
         selected_type = st.selectbox(
             'Select the option that best matches your skin.',
             options=[None] + skin_types['skin_type_id'].tolist(),
             format_func=lambda value: 'Choose skin type' if value is None else skin_types.loc[skin_types['skin_type_id'] == value, 'skin_type_name'].values[0],
+            label_visibility="collapsed",
             help='This helps match product recommendations to your skin behavior.',
         )
 
-        st.markdown('### Primary concern')
+        st.markdown('<h3 style="color: #000000 !important;">Primary concern</h3>', unsafe_allow_html=True)
         selected_issue = st.selectbox(
             'Which concern should we prioritize?',
             options=[None] + skin_issues['issue_id'].tolist(),
             format_func=lambda value: 'Choose primary concern' if value is None else skin_issues.loc[skin_issues['issue_id'] == value, 'issue_name'].values[0],
+            label_visibility="collapsed",
             help='Pick the skin issue you want to address first.',
         )
 
-        st.markdown('<div style="color: #5f7f6d; font-size: 1.26rem; margin-top:6px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #000000; font-size: 1.26rem; margin-top:6px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
 
         submitted = st.form_submit_button('Review recommendations')
 
@@ -508,7 +530,6 @@ def render_results():
 
     visible_products = results[results['category_name'].isin(category_selection)]
 
-    # Tightened ratio from [2, 1] to [1.2, 1] with gap="small" to pull control buttons closer
     col1, col2 = st.columns([1.2, 1], gap="small")
     with col1:
         if st.button('Select all products'):
