@@ -177,8 +177,8 @@ def render_sidebar():
         st.markdown(
             f"""
             <div style='padding: 18px 0 10px 0;'>
-                <div style='font-size: 1.2rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
-                <div style='color: {MUTED}; font-size: 0.9rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
+                <div style='font-size: 1.35rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
+                <div style='color: {MUTED}; font-size: 1.05rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -207,12 +207,12 @@ def render_sidebar():
             f"""
             <div style='display:flex; gap: 12px; flex-wrap: wrap;'>
                 <div style='background: rgba(123, 187, 152, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.2rem;'>{stats['products']}</div>
-                    <div style='color:{MUTED}; font-size:0.9rem;'>Products</div>
+                    <div style='font-weight:700; font-size:1.35rem;'>{stats['products']}</div>
+                    <div style='color:{MUTED}; font-size:1.05rem;'>Products</div>
                 </div>
                 <div style='background: rgba(90, 165, 117, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.2rem;'>{stats['categories']}</div>
-                    <div style='color:{MUTED}; font-size:0.9rem;'>Categories</div>
+                    <div style='font-weight:700; font-size:1.35rem;'>{stats['categories']}</div>
+                    <div style='color:{MUTED}; font-size:1.05rem;'>Categories</div>
                 </div>
             </div>
             """,
@@ -236,7 +236,7 @@ def render_home():
 
     st.markdown('<div class="section-header">How to Begin?</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ol style="color: #5f7f6d; font-size: 1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
+        '<ol style="color: #5f7f6d; font-size: 1.1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
         '<li>Select your skin type and main concern.</li>'
         '<li>See product suggestions grouped by routine category.</li>'
         '<li>Export only the items you want in a polished PDF.</li>'
@@ -249,7 +249,7 @@ def render_home():
     cta_left, cta_right = st.columns([3, 1])
     with cta_left:
         st.markdown(
-            '<div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">Start the Recommendation Process</div>'
+            '<div style="font-size:1.25rem; font-weight:700; margin-bottom:8px;">Start the Recommendation Process</div>'
             '<div style="color:#5f7f6d; line-height:1.75;">Press the button to go to the assessment.</div>',
             unsafe_allow_html=True,
         )
@@ -276,7 +276,7 @@ def render_assessment():
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1rem; color: #5f7f6d; line-height: 1.6; margin-bottom: 18px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1.1rem; color: #5f7f6d; line-height: 1.6; margin-bottom: 18px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
@@ -426,7 +426,7 @@ def render_results():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">', unsafe_allow_html=True)
-    st.markdown(f'<div><div style="font-size:1.1rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div><div style="font-size:1.25rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d; font-size:1.05rem;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -578,7 +578,7 @@ def render_about():
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="font-weight:700; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #5f7f6d; font-size: 1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
+        '<ul style="color: #5f7f6d; font-size: 1.1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
         '<li>Streamlit for interface and navigation.</li>'
         '<li>SQLite for light product and profile data storage.</li>'
         '<li>ReportLab to generate export-ready PDF summaries.</li>'

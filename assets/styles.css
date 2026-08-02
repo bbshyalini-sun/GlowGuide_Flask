@@ -1,6 +1,6 @@
 :root { color-scheme: light; }
-body { background: #edf7ee; }
-.stApp { background: #edf7ee; color: #10392e; }
+body { background: #edf7ee; font-size: 1.05rem; }
+.stApp { background: #edf7ee; color: #10392e; font-size: 1.05rem; }
 [data-testid="stAppViewContainer"] { background: #edf7ee; }
 [data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid rgba(90, 165, 117, 0.18); }
 #MainMenu { visibility: hidden; }
@@ -16,8 +16,8 @@ header { visibility: hidden; }
     margin-bottom: 32px;
     box-shadow: 0 20px 60px rgba(90,165,117,0.18);
 }
-.hero-title { font-size: 3rem; font-weight: 800; margin: 0; color: #10392e; }
-.hero-subtitle { font-size: 1.05rem; color: #5f7f6d; margin-top: 16px; max-width: 720px; }
+.hero-title { font-size: 3.4rem; font-weight: 800; margin: 0; color: #10392e; }
+.hero-subtitle { font-size: 1.2rem; color: #5f7f6d; margin-top: 16px; max-width: 720px; }
 .section-card {
     background: #ffffff;
     border-radius: 22px;
@@ -33,7 +33,7 @@ header { visibility: hidden; }
     border: 1px solid rgba(123, 187, 152, 0.25);
     min-height: 180px;
 }
-.feature-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: #10392e; }
+.feature-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; color: #10392e; }
 .feature-copy { color: #5f7f6d; line-height: 1.7; margin: 0; }
 .product-card {
     background: #ffffff;
@@ -50,16 +50,16 @@ header { visibility: hidden; }
 .product-card:focus-within {
     outline: 3px solid rgba(90,165,117,0.12);
 }
-.product-title { margin: 0 0 8px 0; color: #10392e; font-size: 1.15rem; font-weight: 700; }
-.product-meta { color: #78b094; margin-bottom: 12px; font-size: 0.95rem; letter-spacing: 0.01em; }
-.product-desc { color: #5f7f6d; line-height: 1.7; margin: 0.35rem 0; font-size: 0.95rem; }
+.product-title { margin: 0 0 8px 0; color: #10392e; font-size: 1.3rem; font-weight: 700; }
+.product-meta { color: #78b094; margin-bottom: 12px; font-size: 1.05rem; letter-spacing: 0.01em; }
+.product-desc { color: #5f7f6d; line-height: 1.7; margin: 0.35rem 0; font-size: 1.05rem; }
 .section-header { color: #10392e; margin-bottom: 14px; }
-.step-pill { display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(123, 187, 152, 0.3); color: #10392e; font-size: 0.95rem; margin-right: 10px; margin-bottom: 14px; }
+.step-pill { display: inline-flex; align-items: center; padding: 0.65rem 1rem; border-radius: 999px; background: rgba(123, 187, 152, 0.3); color: #10392e; font-size: 1.05rem; margin-right: 10px; margin-bottom: 14px; }
 .step-pill.active { background: #5aa575; color: #ffffff; }
 .disclaimer-card { background: rgba(123, 187, 152, 0.18); border-radius: 18px; padding: 20px; color: #10392e; border: 1px solid rgba(123, 187, 152, 0.32); }
 .metric-card { background: rgba(255,255,255,0.95); border-radius: 18px; padding: 18px; border: 1px solid rgba(123, 187, 152, 0.18); min-height: 120px; }
-.metric-value { font-size: 2rem; font-weight: 700; margin: 0; color: #10392e; }
-.metric-label { margin: 0; color: #5f7f6d; font-size: 0.95rem; }
+.metric-value { font-size: 2.3rem; font-weight: 700; margin: 0; color: #10392e; }
+.metric-label { margin: 0; color: #5f7f6d; font-size: 1.05rem; }
 .stButton > button, .stFormSubmitButton > button { background-color: #5aa575 !important; color: #ffffff !important; border: none !important; padding: 0.8rem 1.5rem !important; border-radius: 999px !important; box-shadow: 0 10px 30px rgba(90, 168, 151, 0.23) !important; }
 .stButton > button:hover, .stFormSubmitButton > button:hover { background-color: #368160 !important; }
 .stButton > button:focus-visible, .stFormSubmitButton > button:focus-visible { outline: 3px solid rgba(54,129,96,0.18); box-shadow: 0 0 0 3px rgba(90,165,117,0.08); }
