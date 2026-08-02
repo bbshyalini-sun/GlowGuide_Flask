@@ -423,11 +423,10 @@ def render_assessment():
         return
 
     with st.form('assessment_form'):
-        st.text_input('Profile name (optional)', key='profile_name', help='Add a short label so you can recognize this routine later.')
+        st.text_input(key='profile_name', help='Add a short label so you can recognize this routine later.')
 
         st.markdown('<h3 style="color: #000000 !important;">Your skin type</h3>', unsafe_allow_html=True)
         selected_type = st.selectbox(
-            'Select the option that best matches your skin.',
             options=[None] + skin_types['skin_type_id'].tolist(),
             format_func=lambda value: 'Choose skin type' if value is None else skin_types.loc[skin_types['skin_type_id'] == value, 'skin_type_name'].values[0],
             help='This helps match product recommendations to your skin behavior.',
@@ -435,7 +434,6 @@ def render_assessment():
 
         st.markdown('<h3 style="color: #000000 !important;">Primary concern</h3>', unsafe_allow_html=True)
         selected_issue = st.selectbox(
-            'Which concern should we prioritize?',
             options=[None] + skin_issues['issue_id'].tolist(),
             format_func=lambda value: 'Choose primary concern' if value is None else skin_issues.loc[skin_issues['issue_id'] == value, 'issue_name'].values[0],
             help='Pick the skin issue you want to address first.',
