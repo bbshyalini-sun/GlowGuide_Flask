@@ -231,6 +231,46 @@ def set_view(view_name):
 
 def render_sidebar():
     with st.sidebar:
+        # CSS override to force visibility & high contrast for sidebar navigation text
+        st.markdown(
+            f"""
+            <style>
+                /* Sidebar Radio Main Title ("Navigation") */
+                div[data-testid="stSidebar"] div[data-testid="stRadio"] > label {{
+                    color: {TEXT} !important;
+                    font-size: 1.3rem !important;
+                    font-weight: 700 !important;
+                    margin-bottom: 8px !important;
+                }}
+
+                /* Sidebar Radio Link Option Labels (Home, Skin Assessment, etc.) */
+                div[data-testid="stSidebar"] div[role="radiogroup"] label {{
+                    background-color: transparent !important;
+                    padding: 6px 10px !important;
+                    border-radius: 8px !important;
+                    transition: background-color 0.2s ease !important;
+                }}
+
+                /* Force option text visibility */
+                div[data-testid="stSidebar"] div[role="radiogroup"] label p {{
+                    color: {TEXT} !important;
+                    font-size: 1.2rem !important;
+                    font-weight: 600 !important;
+                }}
+
+                /* Hover state for links */
+                div[data-testid="stSidebar"] div[role="radiogroup"] label:hover {{
+                    background-color: rgba(90, 165, 117, 0.15) !important;
+                }}
+
+                div[data-testid="stSidebar"] div[role="radiogroup"] label:hover p {{
+                    color: {PRIMARY_DARK} !important;
+                }}
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
         st.markdown(
             f"""
             <div style='padding: 18px 0 10px 0;'>
