@@ -25,20 +25,22 @@ st.markdown(
             font-size: 120% !important;
         }
 
-        /* Streamlit native markdown, text, inputs, buttons, and radio/selectbox labels */
-        .stMarkdown, .stText, p, span, label, input, textarea, select, div[role="radiogroup"] {
-            font-size: 1.25rem !important;
+        /* All Labels styling */
+        label {
+            color: #10392e !important; /* Main label color */
         }
 
-        /* Form labels & titles */
-        .stTextInput label, .stSelectbox label, .stMultiSelect label, .stRadio label {
+        /* Form input labels */
+        .stTextInput label, .stSelectbox label, .stMultiSelect label {
             font-size: 1.35rem !important;
             font-weight: 600 !important;
+            color: #368160 !important; /* Accent color for form labels */
         }
 
-        /* Form input text fields & select boxes */
-        .stTextInput input, .stSelectbox div[data-baseweb="select"] {
-            font-size: 1.2rem !important;
+        /* Sidebar Navigation links color */
+        div[data-testid="stSidebar"] label {
+            color: #10392e !important;
+            font-size: 1.25rem !important;
         }
 
         /* Buttons */
