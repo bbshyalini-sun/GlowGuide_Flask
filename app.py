@@ -33,9 +33,51 @@ st.markdown(
             margin-bottom: 4px !important;
         }
 
-        /* Input fields and select dropdowns */
-        .stTextInput input, .stSelectbox div[data-baseweb="select"] {
+        /* ALL INPUT BARS AND DROPDOWNS: Light Green background with high-contrast text */
+        .stTextInput input, 
+        .stTextArea textarea, 
+        .stNumberInput input,
+        .stSelectbox div[data-baseweb="select"] > div,
+        .stMultiSelect div[data-baseweb="select"] > div {
             font-size: 1.38rem !important;
+            background-color: #d8f3dc !important;
+            color: #10392e !important;
+            border: 1.5px solid #74c69d !important;
+            border-radius: 8px !important;
+        }
+
+        /* Input field placeholders */
+        .stTextInput input::placeholder, .stTextArea textarea::placeholder {
+            color: #406b56 !important;
+        }
+
+        /* Dropdown inner text and arrow icons */
+        .stSelectbox div[data-baseweb="select"] *, 
+        .stMultiSelect div[data-baseweb="select"] * {
+            color: #10392e !important;
+            fill: #10392e !important;
+            font-weight: 600 !important;
+        }
+
+        /* Selected tag pills inside multiselect bars */
+        div[data-baseweb="tag"] {
+            background-color: #b7e4c7 !important;
+            border: 1px solid #74c69d !important;
+        }
+
+        div[data-baseweb="tag"] * {
+            color: #10392e !important;
+            font-weight: 600 !important;
+        }
+
+        /* Open dropdown menu list container & options */
+        div[data-baseweb="popover"] ul {
+            background-color: #eaf7ed !important;
+        }
+
+        div[data-baseweb="popover"] li * {
+            color: #10392e !important;
+            font-size: 1.3rem !important;
         }
 
         /* Action buttons (+20% larger: ~1.45rem) */
@@ -381,7 +423,6 @@ def render_home():
 
 def render_assessment():
     """Collects the user's skin type and concern before running the recommendation query."""
-    # Override assessment page text to pure black (except inside input boxes and buttons)
     st.markdown(
         """
         <style>
@@ -493,7 +534,7 @@ def render_assessment():
 
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
-    # Custom styling scoped exclusively to the Results page
+    # Custom styling for export button scoped exclusively to Results page
     st.markdown(
         """
         <style>
@@ -508,29 +549,6 @@ def render_results():
                 background-color: #1f4e39 !important;
                 color: #ffffff !important;
                 border-color: #1f4e39 !important;
-            }
-
-            /* Dropdown bars (Multiselect & Selectbox) dark green background */
-            .results-container .stMultiSelect div[data-baseweb="select"] > div,
-            .results-container .stSelectbox div[data-baseweb="select"] > div {
-                background-color: #2d6a4f !important;
-                border-color: #2d6a4f !important;
-            }
-
-            /* Dropdown bar inner text and icon styling */
-            .results-container .stMultiSelect div[data-baseweb="select"] *,
-            .results-container .stSelectbox div[data-baseweb="select"] * {
-                color: #ffffff !important;
-                fill: #ffffff !important;
-            }
-
-            /* Selected option pills inside multiselect */
-            .results-container div[data-baseweb="tag"] {
-                background-color: #1f4e39 !important;
-            }
-
-            .results-container div[data-baseweb="tag"] * {
-                color: #ffffff !important;
             }
         </style>
         """,
