@@ -16,73 +16,73 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Global CSS override to fit all text comfortably on the display window
+# Global CSS override - text scaled 20% larger, tight line spacing preserved
 st.markdown(
     """
     <style>
-        /* Base typography scale - calibrated to fit standard screen height */
+        /* Base typography scale (+20% larger: ~1.38rem) */
         html, body, [class*="css"], .stMarkdown, .stText, p, span, label, input, textarea, select, button, div, a, li {
-            font-size: 1.15rem !important;
+            font-size: 1.38rem !important;
             line-height: 1.35 !important;
         }
 
-        /* Form Labels & Widget titles */
+        /* Form Labels & Widget titles (+20% larger: ~1.5rem) */
         .stTextInput label, .stSelectbox label, .stMultiSelect label, .stRadio label {
-            font-size: 1.25rem !important;
+            font-size: 1.5rem !important;
             font-weight: 700 !important;
             margin-bottom: 4px !important;
         }
 
         /* Input fields and select dropdowns */
         .stTextInput input, .stSelectbox div[data-baseweb="select"] {
-            font-size: 1.15rem !important;
+            font-size: 1.38rem !important;
         }
 
-        /* Action buttons */
+        /* Action buttons (+20% larger: ~1.45rem) */
         .stButton > button, .stDownloadButton > button {
-            font-size: 1.2rem !important;
+            font-size: 1.45rem !important;
             padding: 0.5rem 1rem !important;
             font-weight: 600 !important;
             line-height: 1.3 !important;
         }
 
-        /* Heading hierarchy tuned for desktop displays */
+        /* Heading hierarchy scaled +20% */
         h1, .hero-title {
-            font-size: 2.0rem !important;
+            font-size: 2.4rem !important;
             font-weight: 800 !important;
             margin-bottom: 6px !important;
         }
 
         h2, .section-header {
-            font-size: 1.5rem !important;
+            font-size: 1.8rem !important;
             font-weight: 700 !important;
             margin-top: 10px !important;
             margin-bottom: 6px !important;
         }
 
         h3 {
-            font-size: 1.3rem !important;
+            font-size: 1.55rem !important;
             font-weight: 700 !important;
             margin-top: 8px !important;
             margin-bottom: 4px !important;
         }
 
-        /* Custom components */
-        .hero-subtitle { font-size: 1.25rem !important; }
-        .step-pill { font-size: 1.15rem !important; font-weight: 700 !important; }
-        .product-title { font-size: 1.35rem !important; font-weight: 700 !important; }
-        .product-meta { font-size: 1.15rem !important; }
-        .product-desc { font-size: 1.1rem !important; }
-        .disclaimer-card { font-size: 1.05rem !important; }
+        /* Custom UI components (+20% scaled) */
+        .hero-subtitle { font-size: 1.5rem !important; }
+        .step-pill { font-size: 1.38rem !important; font-weight: 700 !important; }
+        .product-title { font-size: 1.62rem !important; font-weight: 700 !important; }
+        .product-meta { font-size: 1.38rem !important; }
+        .product-desc { font-size: 1.32rem !important; }
+        .disclaimer-card { font-size: 1.26rem !important; }
 
         /* Expanders */
         .streamlit-expanderHeader {
-            font-size: 1.25rem !important;
+            font-size: 1.5rem !important;
             font-weight: 600 !important;
             padding: 6px 10px !important;
         }
 
-        /* Compact vertical stack gaps to prevent unnecessary scrolling */
+        /* Vertical stack gaps */
         div[data-testid="stVerticalBlock"] {
             gap: 0.65rem !important;
         }
@@ -257,10 +257,10 @@ def render_sidebar():
         st.markdown(
             f"""
             <style>
-                /* Sidebar Radio Label and Options */
+                /* Sidebar Radio Title and Options (+20% scaled) */
                 div[data-testid="stSidebar"] div[data-testid="stRadio"] > label {{
                     color: {TEXT} !important;
-                    font-size: 1.25rem !important;
+                    font-size: 1.5rem !important;
                     font-weight: 700 !important;
                     margin-bottom: 4px !important;
                 }}
@@ -273,7 +273,7 @@ def render_sidebar():
 
                 div[data-testid="stSidebar"] div[role="radiogroup"] label p {{
                     color: {TEXT} !important;
-                    font-size: 1.15rem !important;
+                    font-size: 1.38rem !important;
                     font-weight: 600 !important;
                     line-height: 1.3 !important;
                 }}
@@ -293,8 +293,8 @@ def render_sidebar():
         st.markdown(
             f"""
             <div style='padding: 10px 0 6px 0;'>
-                <div style='font-size: 1.5rem; font-weight: 800; color: {TEXT}; margin-bottom: 4px;'>Skinalyze</div>
-                <div style='color: {MUTED}; font-size: 1.05rem; line-height: 1.35;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
+                <div style='font-size: 1.8rem; font-weight: 800; color: {TEXT}; margin-bottom: 4px;'>Skinalyze</div>
+                <div style='color: {MUTED}; font-size: 1.26rem; line-height: 1.35;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -323,12 +323,12 @@ def render_sidebar():
             f"""
             <div style='display:flex; gap: 10px; flex-wrap: wrap;'>
                 <div style='background: rgba(123, 187, 152, 0.2); border-radius: 10px; padding: 10px; min-width: 90px;'>
-                    <div style='font-weight:700; font-size:1.35rem; line-height: 1.2;'>{stats['products']}</div>
-                    <div style='color:{MUTED}; font-size:1.05rem; line-height: 1.2;'>Products</div>
+                    <div style='font-weight:700; font-size:1.62rem; line-height: 1.2;'>{stats['products']}</div>
+                    <div style='color:{MUTED}; font-size:1.26rem; line-height: 1.2;'>Products</div>
                 </div>
                 <div style='background: rgba(90, 165, 117, 0.2); border-radius: 10px; padding: 10px; min-width: 90px;'>
-                    <div style='font-weight:700; font-size:1.35rem; line-height: 1.2;'>{stats['categories']}</div>
-                    <div style='color:{MUTED}; font-size:1.05rem; line-height: 1.2;'>Categories</div>
+                    <div style='font-weight:700; font-size:1.62rem; line-height: 1.2;'>{stats['categories']}</div>
+                    <div style='color:{MUTED}; font-size:1.26rem; line-height: 1.2;'>Categories</div>
                 </div>
             </div>
             """,
@@ -352,7 +352,7 @@ def render_home():
 
     st.markdown('<div class="section-header">How to Begin?</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ol style="color: #5f7f6d; font-size: 1.15rem; line-height: 1.6; padding-left: 20px; margin: 4px 0;">'
+        '<ol style="color: #5f7f6d; font-size: 1.38rem; line-height: 1.6; padding-left: 20px; margin: 4px 0;">'
         '<li>Select your skin type and main concern.</li>'
         '<li>See product suggestions grouped by routine category.</li>'
         '<li>Export only the items you want in a polished PDF.</li>'
@@ -361,11 +361,12 @@ def render_home():
     )
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    cta_left, cta_right = st.columns([3, 1])
+    # Tightened ratio from [3, 1] to [1.8, 1] with gap="small" to bring button 30%+ closer
+    cta_left, cta_right = st.columns([1.8, 1], gap="small")
     with cta_left:
         st.markdown(
-            '<div style="font-size:1.25rem; font-weight:700; margin-bottom:4px;">Start the Recommendation Process</div>'
-            '<div style="color:#5f7f6d; font-size:1.1rem; line-height:1.4;">Press the button to go to the assessment.</div>',
+            '<div style="font-size:1.5rem; font-weight:700; margin-bottom:4px;">Start the Recommendation Process</div>'
+            '<div style="color:#5f7f6d; font-size:1.32rem; line-height:1.4;">Press the button to go to the assessment.</div>',
             unsafe_allow_html=True,
         )
     with cta_right:
@@ -390,7 +391,7 @@ def render_assessment():
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1.15rem; color: #5f7f6d; line-height: 1.5; margin-bottom: 8px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1.38rem; color: #5f7f6d; line-height: 1.5; margin-bottom: 8px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
@@ -420,7 +421,7 @@ def render_assessment():
             help='Pick the skin issue you want to address first.',
         )
 
-        st.markdown('<div style="color: #5f7f6d; font-size: 1.05rem; margin-top:6px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #5f7f6d; font-size: 1.26rem; margin-top:6px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
 
         submitted = st.form_submit_button('Review recommendations')
 
@@ -483,7 +484,7 @@ def render_results():
 
     st.markdown('<div class="step-pill active">Step 2 of 3: Review recommendations</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Your personalized product roadmap is ready.</div>', unsafe_allow_html=True)
-    st.markdown('<div style="color: #5f7f6d; font-size: 1.15rem; line-height: 1.4; margin-bottom: 8px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="color: #5f7f6d; font-size: 1.38rem; line-height: 1.4; margin-bottom: 8px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
     st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
@@ -507,7 +508,8 @@ def render_results():
 
     visible_products = results[results['category_name'].isin(category_selection)]
 
-    col1, col2 = st.columns([2, 1])
+    # Tightened ratio from [2, 1] to [1.2, 1] with gap="small" to pull control buttons closer
+    col1, col2 = st.columns([1.2, 1], gap="small")
     with col1:
         if st.button('Select all products'):
             st.session_state.selected_products = results['product_id'].tolist()
@@ -530,7 +532,7 @@ def render_results():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">', unsafe_allow_html=True)
-    st.markdown(f'<div><div style="font-size:1.25rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d; font-size:1.1rem;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div><div style="font-size:1.5rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d; font-size:1.32rem;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -615,7 +617,7 @@ def render_guide():
 
     with st.expander('Skin types explained', expanded=True):
         st.markdown(
-            '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">'
+            '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">'
             '<strong>Oily</strong>: Skin that appears shiny and may feel greasy by midday. Ideal routines focus on lightweight hydration and oil control.<br>'
             '<strong>Dry</strong>: Skin that feels tight, flaky, or uncomfortable. Look for rich, moisture-retaining products.<br>'
             '<strong>Combination</strong>: Oil in the T-zone with drier cheeks. Balance hydration without overloading oily areas.<br>'
@@ -625,7 +627,7 @@ def render_guide():
 
     with st.expander('Common concerns', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">'
+            '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">'
             '<strong>Acne</strong>: Look for gentle exfoliation and oil-balancing support.<br>'
             '<strong>Dryness</strong>: Prioritize humectants and occlusives for lasting hydration.<br>'
             '<strong>Excess sebum</strong>: Reduce shine with lightweight, non-comedogenic products.<br>'
@@ -635,7 +637,7 @@ def render_guide():
 
     with st.expander('Ingredient insights', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">'
+            '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">'
             '<strong>Hyaluronic acid</strong>: Hydrates by drawing moisture into the skin.<br>'
             '<strong>Niacinamide</strong>: Balances oil production and supports barrier strength.<br>'
             '<strong>Vitamin C</strong>: Helps brighten dullness and support a more even skin tone.<br>'
@@ -645,7 +647,7 @@ def render_guide():
 
     with st.expander('Routine tips', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">'
+            '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">'
             '<strong>Cleanse</strong> with a gentle cleanser to remove impurities without stripping skin.<br>'
             '<strong>Treat</strong> with serums and targeted support for your main concern.<br>'
             '<strong>Moisturize</strong> daily to keep the skin barrier healthy.<br>'
@@ -663,25 +665,25 @@ def render_about():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
+        '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
         'It applies a rule-based matching process to pair skin types and concerns with suitable products and ingredient profiles.</div>',
         unsafe_allow_html=True,
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-weight:700; font-size:1.25rem; margin-bottom:4px;">How recommendations are generated</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-weight:700; font-size:1.5rem; margin-bottom:4px;">How recommendations are generated</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#5f7f6d; font-size:1.15rem; line-height:1.6;">The system finds products that are linked to your chosen skin type and primary concern. '
+        '<div style="color:#5f7f6d; font-size:1.38rem; line-height:1.6;">The system finds products that are linked to your chosen skin type and primary concern. '
         'Results are grouped by category so you can review cleansers, moisturizers, serums, and more in an organized way.</div>',
         unsafe_allow_html=True,
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-weight:700; font-size:1.25rem; margin-bottom:4px;">Technologies used</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-weight:700; font-size:1.5rem; margin-bottom:4px;">Technologies used</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #5f7f6d; font-size: 1.15rem; line-height: 1.6; padding-left: 20px; margin: 4px 0;">'
+        '<ul style="color: #5f7f6d; font-size: 1.38rem; line-height: 1.6; padding-left: 20px; margin: 4px 0;">'
         '<li>Streamlit for interface and navigation.</li>'
         '<li>SQLite for light product and profile data storage.</li>'
         '<li>ReportLab to generate export-ready PDF summaries.</li>'
