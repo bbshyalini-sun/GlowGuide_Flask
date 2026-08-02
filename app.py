@@ -78,7 +78,7 @@ st.markdown(
         /* Open dropdown menu popover options */
         div[data-baseweb="popover"] [data-baseweb="menu"],
         div[data-baseweb="popover"] ul {
-            background-color: #edf7ee !important;
+            background-color: #ffffff !important;
             border: 1px solid #5aa575 !important;
         }
 
@@ -442,6 +442,29 @@ def render_assessment():
     st.markdown(
         """
         <style>
+            /* Revert assessment dropdowns and input fields to standard white background with crisp dark text */
+            .assessment-container .stTextInput input, 
+            .assessment-container div[data-testid="stSelectbox"] > div > div,
+            .assessment-container div[data-baseweb="select"] > div {
+                background-color: #ffffff !important;
+                border: 1.5px solid #b2cca2 !important;
+                border-radius: 8px !important;
+            }
+
+            .assessment-container div[data-baseweb="select"] *, 
+            .assessment-container div[data-baseweb="select"] span,
+            .assessment-container div[data-baseweb="select"] input,
+            .assessment-container .stTextInput input {
+                color: #000000 !important;
+                -webkit-text-fill-color: #000000 !important;
+                font-weight: 600 !important;
+            }
+
+            .assessment-container div[data-baseweb="select"] svg {
+                fill: #000000 !important;
+                color: #000000 !important;
+            }
+
             .assessment-container,
             .assessment-container .section-header,
             .assessment-container .step-pill,
