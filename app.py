@@ -493,7 +493,51 @@ def render_assessment():
 
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
-    st.markdown('<div class="app-content">', unsafe_allow_html=True)
+    # Custom styling scoped exclusively to the Results page
+    st.markdown(
+        """
+        <style>
+            /* Export button - Dark green background with crisp white text */
+            .results-container .stDownloadButton > button {
+                background-color: #2d6a4f !important;
+                color: #ffffff !important;
+                border: 1px solid #2d6a4f !important;
+            }
+
+            .results-container .stDownloadButton > button:hover {
+                background-color: #1b4332 !important;
+                color: #ffffff !important;
+                border-color: #1b4332 !important;
+            }
+
+            /* Dropdown bars (Multiselect & Selectbox) container background & border */
+            .results-container .stMultiSelect div[data-baseweb="select"] > div,
+            .results-container .stSelectbox div[data-baseweb="select"] > div {
+                background-color: #2d6a4f !important;
+                border-color: #2d6a4f !important;
+            }
+
+            /* Dropdown bar inner text and icon styling */
+            .results-container .stMultiSelect div[data-baseweb="select"] *,
+            .results-container .stSelectbox div[data-baseweb="select"] * {
+                color: #ffffff !important;
+                fill: #ffffff !important;
+            }
+
+            /* Selected option pills inside multiselect */
+            .results-container div[data-baseweb="tag"] {
+                background-color: #1b4332 !important;
+            }
+
+            .results-container div[data-baseweb="tag"] * {
+                color: #ffffff !important;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="app-content results-container">', unsafe_allow_html=True)
 
     if st.button("← Back to Homepage", key="back_to_home_results"):
         set_view('home')
