@@ -16,6 +16,61 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Injected CSS to globally scale up font sizes on display across native widgets & HTML elements
+st.markdown(
+    """
+    <style>
+        /* Base typography scale */
+        html, body {
+            font-size: 120% !important;
+        }
+
+        /* Streamlit native markdown, text, inputs, buttons, and radio/selectbox labels */
+        .stMarkdown, .stText, p, span, label, input, textarea, select, div[role="radiogroup"] {
+            font-size: 1.25rem !important;
+        }
+
+        /* Form labels & titles */
+        .stTextInput label, .stSelectbox label, .stMultiSelect label, .stRadio label {
+            font-size: 1.35rem !important;
+            font-weight: 600 !important;
+        }
+
+        /* Form input text fields & select boxes */
+        .stTextInput input, .stSelectbox div[data-baseweb="select"] {
+            font-size: 1.2rem !important;
+        }
+
+        /* Buttons */
+        .stButton > button, .stDownloadButton > button {
+            font-size: 1.25rem !important;
+            padding: 0.6rem 1.2rem !important;
+            font-weight: 600 !important;
+        }
+
+        /* Headings scaling */
+        h1, .hero-title { font-size: 2.8rem !important; font-weight: 800 !important; }
+        h2, .section-header { font-size: 2.2rem !important; font-weight: 700 !important; }
+        h3 { font-size: 1.75rem !important; font-weight: 700 !important; }
+
+        /* Custom UI component classes scaling */
+        .hero-subtitle { font-size: 1.4rem !important; }
+        .step-pill { font-size: 1.25rem !important; font-weight: 700 !important; }
+        .product-title { font-size: 1.6rem !important; font-weight: 800 !important; }
+        .product-meta { font-size: 1.25rem !important; }
+        .product-desc { font-size: 1.2rem !important; line-height: 1.6 !important; }
+        .disclaimer-card { font-size: 1.15rem !important; line-height: 1.6 !important; }
+
+        /* Expanders content */
+        .streamlit-expanderHeader {
+            font-size: 1.35rem !important;
+            font-weight: 600 !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 APP_BACKGROUND = "#edf7ee"
 CARD_BACKGROUND = "#ffffff"
 TEXT = "#10392e"
@@ -177,8 +232,8 @@ def render_sidebar():
         st.markdown(
             f"""
             <div style='padding: 18px 0 10px 0;'>
-                <div style='font-size: 1.35rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
-                <div style='color: {MUTED}; font-size: 1.05rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
+                <div style='font-size: 1.7rem; font-weight: 800; color: {TEXT}; margin-bottom: 6px;'>Skinalyze</div>
+                <div style='color: {MUTED}; font-size: 1.25rem; line-height: 1.4;'>Personalized skincare recommendations — simple, practical, and evidence-informed.</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -207,12 +262,12 @@ def render_sidebar():
             f"""
             <div style='display:flex; gap: 12px; flex-wrap: wrap;'>
                 <div style='background: rgba(123, 187, 152, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.35rem;'>{stats['products']}</div>
-                    <div style='color:{MUTED}; font-size:1.05rem;'>Products</div>
+                    <div style='font-weight:700; font-size:1.65rem;'>{stats['products']}</div>
+                    <div style='color:{MUTED}; font-size:1.25rem;'>Products</div>
                 </div>
                 <div style='background: rgba(90, 165, 117, 0.2); border-radius: 14px; padding: 14px; min-width: 100px;'>
-                    <div style='font-weight:700; font-size:1.35rem;'>{stats['categories']}</div>
-                    <div style='color:{MUTED}; font-size:1.05rem;'>Categories</div>
+                    <div style='font-weight:700; font-size:1.65rem;'>{stats['categories']}</div>
+                    <div style='color:{MUTED}; font-size:1.25rem;'>Categories</div>
                 </div>
             </div>
             """,
@@ -236,7 +291,7 @@ def render_home():
 
     st.markdown('<div class="section-header">How to Begin?</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ol style="color: #5f7f6d; font-size: 1.1rem; line-height: 1.9; padding-left: 18px; margin: 0;">'
+        '<ol style="color: #5f7f6d; font-size: 1.35rem; line-height: 1.9; padding-left: 22px; margin: 0;">'
         '<li>Select your skin type and main concern.</li>'
         '<li>See product suggestions grouped by routine category.</li>'
         '<li>Export only the items you want in a polished PDF.</li>'
@@ -249,8 +304,8 @@ def render_home():
     cta_left, cta_right = st.columns([3, 1])
     with cta_left:
         st.markdown(
-            '<div style="font-size:1.25rem; font-weight:700; margin-bottom:8px;">Start the Recommendation Process</div>'
-            '<div style="color:#5f7f6d; line-height:1.75;">Press the button to go to the assessment.</div>',
+            '<div style="font-size:1.5rem; font-weight:700; margin-bottom:8px;">Start the Recommendation Process</div>'
+            '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.75;">Press the button to go to the assessment.</div>',
             unsafe_allow_html=True,
         )
     with cta_right:
@@ -269,14 +324,14 @@ def render_assessment():
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
     st.markdown('<div class="step-pill active" role="status">Step 1: Profile your skin</div>', unsafe_allow_html=True)
 
-    # Added navigation button
+    # Navigation button
     if st.button("← Back to Homepage", key="back_to_home_assess"):
         set_view('home')
 
     st.progress(0.33)
     st.markdown('<div class="section-header">Quick assessment — tell us about your skin</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 1.1rem; color: #5f7f6d; line-height: 1.6; margin-bottom: 18px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 1.35rem; color: #5f7f6d; line-height: 1.6; margin-bottom: 18px;">Select the option that best describes your skin. We use this to match product recommendations to your profile.</div>', unsafe_allow_html=True)
 
     try:
         skin_types = fetch_data('SELECT * FROM skin_type ORDER BY skin_type_name')
@@ -306,7 +361,7 @@ def render_assessment():
             help='Pick the skin issue you want to address first.',
         )
 
-        st.markdown('<div style="color: #5f7f6d; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color: #5f7f6d; font-size: 1.25rem; margin-top:12px;">If you are unsure, select the concern that feels most urgent today.</div>', unsafe_allow_html=True)
 
         submitted = st.form_submit_button('Review recommendations')
 
@@ -319,7 +374,6 @@ def render_assessment():
             st.session_state.current_skin_type_name = skin_types.loc[skin_types['skin_type_id'] == selected_type, 'skin_type_name'].values[0]
             st.session_state.current_skin_issue_name = skin_issues.loc[skin_issues['issue_id'] == selected_issue, 'issue_name'].values[0]
 
-            # Recommendation logic: match products to the chosen skin type and concern.
             query = '''
                 SELECT
                     p.product_id,
@@ -340,17 +394,9 @@ def render_assessment():
             '''
             results = fetch_data(query, (selected_type, selected_issue))
 
-            # -------------------------------------------------------------
-            # ADD THESE DIAGNOSTIC LINES FOR SYSTEM VALIDATION LOGGING:
-            # -------------------------------------------------------------
             actual_query_count = len(results)
-
-            # Option A: Prints the actual count safely to your IDE terminal window
             print(f"--- VALIDATION LOG --- Profile: {st.session_state.current_skin_type_name} + {st.session_state.current_skin_issue_name} | Actual Count: {actual_query_count}")
-
-            # Option B: Renders the count right on the screen for your verification notes
             st.toast(f"✅ Query complete. Found {actual_query_count} matching products.")
-            # -------------------------------------------------------------
 
             st.session_state.recommendations = results
             st.session_state.selected_products = results['product_id'].tolist()
@@ -367,8 +413,8 @@ def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
     st.markdown('<div class="app-content">', unsafe_allow_html=True)
 
-    # Added navigation button
-    if st.button("← Back to Homepage", key="back_to_home_assess"):
+    # Navigation button
+    if st.button("← Back to Homepage", key="back_to_home_results"):
         set_view('home')
 
     results = st.session_state.recommendations
@@ -379,7 +425,7 @@ def render_results():
 
     st.markdown('<div class="step-pill active">Step 2 of 3: Review recommendations</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-header">Your personalized product roadmap is ready.</div>', unsafe_allow_html=True)
-    st.markdown('<div style="color: #5f7f6d; margin-bottom: 16px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="color: #5f7f6d; font-size: 1.25rem; margin-bottom: 16px;">Select the products you want to export, then download a professional summary.</div>', unsafe_allow_html=True)
     st.markdown('<div class="disclaimer-card">This website does not own or sponsor any of the brands shown. Product details were sourced from open public datasets and independent sources.</div>', unsafe_allow_html=True)
 
     expected_key = f"{st.session_state.current_skin_type_name}-{st.session_state.current_skin_issue_name}"
@@ -426,7 +472,7 @@ def render_results():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown('<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">', unsafe_allow_html=True)
-    st.markdown(f'<div><div style="font-size:1.25rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d; font-size:1.05rem;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div><div style="font-size:1.5rem; font-weight:700;">{len(selected_results)} selected</div><div style="color:#5f7f6d; font-size:1.25rem;">Choose which products to include in the export.</div></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -457,7 +503,6 @@ def render_results():
 
         with st.expander(f"{category} ({len(category_products)})", expanded=True):
             for _, row in category_products.iterrows():
-                product_selected = row.product_id in st.session_state.selected_products
                 ingredient_text = row.active_ingredients if pd.notna(row.active_ingredients) else 'No ingredients listed.'
                 brand_text = row.brand if pd.notna(row.brand) else 'Trusted formula'
                 description = row.description if pd.notna(row.description) else 'No description available.'
@@ -512,7 +557,7 @@ def render_guide():
 
     with st.expander('Skin types explained', expanded=True):
         st.markdown(
-            '<div style="color:#5f7f6d; line-height:1.8;">'
+            '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">'
             '<strong>Oily</strong>: Skin that appears shiny and may feel greasy by midday. Ideal routines focus on lightweight hydration and oil control.<br>'
             '<strong>Dry</strong>: Skin that feels tight, flaky, or uncomfortable. Look for rich, moisture-retaining products.<br>'
             '<strong>Combination</strong>: Oil in the T-zone with drier cheeks. Balance hydration without overloading oily areas.<br>'
@@ -522,7 +567,7 @@ def render_guide():
 
     with st.expander('Common concerns', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; line-height:1.8;">'
+            '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">'
             '<strong>Acne</strong>: Look for gentle exfoliation and oil-balancing support.<br>'
             '<strong>Dryness</strong>: Prioritize humectants and occlusives for lasting hydration.<br>'
             '<strong>Excess sebum</strong>: Reduce shine with lightweight, non-comedogenic products.<br>'
@@ -532,7 +577,7 @@ def render_guide():
 
     with st.expander('Ingredient insights', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; line-height:1.8;">'
+            '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">'
             '<strong>Hyaluronic acid</strong>: Hydrates by drawing moisture into the skin.<br>'
             '<strong>Niacinamide</strong>: Balances oil production and supports barrier strength.<br>'
             '<strong>Vitamin C</strong>: Helps brighten dullness and support a more even skin tone.<br>'
@@ -542,7 +587,7 @@ def render_guide():
 
     with st.expander('Routine tips', expanded=False):
         st.markdown(
-            '<div style="color:#5f7f6d; line-height:1.8;">'
+            '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">'
             '<strong>Cleanse</strong> with a gentle cleanser to remove impurities without stripping skin.<br>'
             '<strong>Treat</strong> with serums and targeted support for your main concern.<br>'
             '<strong>Moisturize</strong> daily to keep the skin barrier healthy.<br>'
@@ -560,25 +605,25 @@ def render_about():
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#5f7f6d; line-height:1.8;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
+        '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">Skinalyze uses your skin profile to surface practical product recommendations from a curated database. '
         'It applies a rule-based matching process to pair skin types and concerns with suitable products and ingredient profiles.</div>',
         unsafe_allow_html=True,
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-weight:700; margin-bottom:10px;">How recommendations are generated</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-weight:700; font-size:1.4rem; margin-bottom:10px;">How recommendations are generated</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div style="color:#5f7f6d; line-height:1.8;">The system finds products that are linked to your chosen skin type and primary concern. '
+        '<div style="color:#5f7f6d; font-size:1.25rem; line-height:1.8;">The system finds products that are linked to your chosen skin type and primary concern. '
         'Results are grouped by category so you can review cleansers, moisturizers, serums, and more in an organized way.</div>',
         unsafe_allow_html=True,
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown('<div style="font-weight:700; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-weight:700; font-size:1.4rem; margin-bottom:10px;">Technologies used</div>', unsafe_allow_html=True)
     st.markdown(
-        '<ul style="color: #5f7f6d; font-size: 1.1rem; line-height: 1.8; padding-left: 18px; margin: 0;">'
+        '<ul style="color: #5f7f6d; font-size: 1.25rem; line-height: 1.8; padding-left: 22px; margin: 0;">'
         '<li>Streamlit for interface and navigation.</li>'
         '<li>SQLite for light product and profile data storage.</li>'
         '<li>ReportLab to generate export-ready PDF summaries.</li>'
