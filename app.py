@@ -33,55 +33,71 @@ st.markdown(
             margin-bottom: 4px !important;
         }
 
-        /* ALL INPUT BARS AND DROPDOWNS: Light Green background with high-contrast text */
+        /* ALL INPUT BARS AND DROPDOWNS: Light Green background with dark green text */
         .stTextInput input, 
         .stTextArea textarea, 
         .stNumberInput input,
-        .stSelectbox div[data-baseweb="select"] > div,
-        .stMultiSelect div[data-baseweb="select"] > div {
+        div[data-testid="stSelectbox"] > div > div,
+        div[data-testid="stMultiSelect"] > div > div,
+        div[data-baseweb="select"] > div {
             font-size: 1.38rem !important;
             background-color: #d8f3dc !important;
-            color: #10392e !important;
-            border: 1.5px solid #74c69d !important;
+            border: 1.5px solid #5aa575 !important;
             border-radius: 8px !important;
         }
 
-        /* Input field placeholders */
-        .stTextInput input::placeholder, .stTextArea textarea::placeholder {
-            color: #406b56 !important;
+        /* Force internal text color and text fill color for inputs/selects */
+        .stTextInput input, 
+        .stTextArea textarea,
+        div[data-baseweb="select"] *, 
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] input {
+            color: #10392e !important;
+            -webkit-text-fill-color: #10392e !important;
+            font-weight: 600 !important;
         }
 
-        /* Dropdown inner text and arrow icons */
-        .stSelectbox div[data-baseweb="select"] *, 
-        .stMultiSelect div[data-baseweb="select"] * {
-            color: #10392e !important;
+        /* Dropdown chevron/arrow icon color */
+        div[data-baseweb="select"] svg {
             fill: #10392e !important;
-            font-weight: 600 !important;
+            color: #10392e !important;
         }
 
         /* Selected tag pills inside multiselect bars */
         div[data-baseweb="tag"] {
             background-color: #b7e4c7 !important;
-            border: 1px solid #74c69d !important;
+            border: 1px solid #5aa575 !important;
         }
 
         div[data-baseweb="tag"] * {
             color: #10392e !important;
+            -webkit-text-fill-color: #10392e !important;
             font-weight: 600 !important;
         }
 
-        /* Open dropdown menu list container & options */
+        /* Open dropdown menu popover options */
+        div[data-baseweb="popover"] [data-baseweb="menu"],
         div[data-baseweb="popover"] ul {
-            background-color: #eaf7ed !important;
+            background-color: #edf7ee !important;
+            border: 1px solid #5aa575 !important;
         }
 
+        div[data-baseweb="popover"] li,
         div[data-baseweb="popover"] li * {
             color: #10392e !important;
+            -webkit-text-fill-color: #10392e !important;
             font-size: 1.3rem !important;
         }
 
+        div[data-baseweb="popover"] li:hover,
+        div[data-baseweb="popover"] li:hover * {
+            background-color: #d8f3dc !important;
+            color: #10392e !important;
+            -webkit-text-fill-color: #10392e !important;
+        }
+
         /* Action buttons (+20% larger: ~1.45rem) */
-        .stButton > button, .stDownloadButton > button {
+        .stButton > button {
             font-size: 1.45rem !important;
             padding: 0.5rem 1rem !important;
             font-weight: 600 !important;
@@ -534,21 +550,29 @@ def render_assessment():
 
 def render_results():
     """Shows the filtered recommendation results and lets the user select products for export."""
-    # Custom styling for export button scoped exclusively to Results page
+    # Custom styling for export button matching system palette
     st.markdown(
         """
         <style>
-            /* Export button - Dark green background when not hovered, keeping white text */
+            /* Export button - System dark green (#368160) with white text */
             .results-container .stDownloadButton > button {
-                background-color: #2d6a4f !important;
+                background-color: #368160 !important;
                 color: #ffffff !important;
-                border: 1px solid #2d6a4f !important;
+                -webkit-text-fill-color: #ffffff !important;
+                border: 2px solid #2d6a4f !important;
+                font-size: 1.45rem !important;
+                font-weight: 700 !important;
+                padding: 0.6rem 1.2rem !important;
+                border-radius: 8px !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
             }
 
             .results-container .stDownloadButton > button:hover {
-                background-color: #1f4e39 !important;
+                background-color: #245840 !important;
+                border-color: #1b4332 !important;
                 color: #ffffff !important;
-                border-color: #1f4e39 !important;
+                -webkit-text-fill-color: #ffffff !important;
+                cursor: pointer !important;
             }
         </style>
         """,
