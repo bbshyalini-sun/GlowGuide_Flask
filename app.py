@@ -497,7 +497,7 @@ def render_results():
     st.markdown(
         """
         <style>
-            /* Export button background - Dark green with white text preserved */
+            /* Export button - Dark green background when not hovered, keeping white text */
             .results-container .stDownloadButton > button {
                 background-color: #2d6a4f !important;
                 color: #ffffff !important;
@@ -505,19 +505,19 @@ def render_results():
             }
 
             .results-container .stDownloadButton > button:hover {
-                background-color: #1b4332 !important;
+                background-color: #1f4e39 !important;
                 color: #ffffff !important;
-                border-color: #1b4332 !important;
+                border-color: #1f4e39 !important;
             }
 
-            /* Dropdown bars (Multiselect & Selectbox) container background & border */
+            /* Dropdown bars (Multiselect & Selectbox) dark green background */
             .results-container .stMultiSelect div[data-baseweb="select"] > div,
             .results-container .stSelectbox div[data-baseweb="select"] > div {
                 background-color: #2d6a4f !important;
                 border-color: #2d6a4f !important;
             }
 
-            /* Dropdown bar inner text and icon styling - Crisp white */
+            /* Dropdown bar inner text and icon styling */
             .results-container .stMultiSelect div[data-baseweb="select"] *,
             .results-container .stSelectbox div[data-baseweb="select"] * {
                 color: #ffffff !important;
@@ -526,7 +526,7 @@ def render_results():
 
             /* Selected option pills inside multiselect */
             .results-container div[data-baseweb="tag"] {
-                background-color: #1b4332 !important;
+                background-color: #1f4e39 !important;
             }
 
             .results-container div[data-baseweb="tag"] * {
@@ -564,8 +564,8 @@ def render_results():
         'Show categories',
         options=product_categories,
         default=st.session_state.selected_categories or product_categories,
-        label_visibility="collapsed",
         help='Filter which product cards are visible.',
+        label_visibility="collapsed",
     )
 
     if not category_selection:
