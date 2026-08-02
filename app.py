@@ -497,7 +497,7 @@ def render_results():
     st.markdown(
         """
         <style>
-            /* Export button - Dark green background with crisp white text */
+            /* Export button background - Dark green with white text preserved */
             .results-container .stDownloadButton > button {
                 background-color: #2d6a4f !important;
                 color: #ffffff !important;
@@ -517,7 +517,7 @@ def render_results():
                 border-color: #2d6a4f !important;
             }
 
-            /* Dropdown bar inner text and icon styling */
+            /* Dropdown bar inner text and icon styling - Crisp white */
             .results-container .stMultiSelect div[data-baseweb="select"] *,
             .results-container .stSelectbox div[data-baseweb="select"] * {
                 color: #ffffff !important;
@@ -564,6 +564,7 @@ def render_results():
         'Show categories',
         options=product_categories,
         default=st.session_state.selected_categories or product_categories,
+        label_visibility="collapsed",
         help='Filter which product cards are visible.',
     )
 
