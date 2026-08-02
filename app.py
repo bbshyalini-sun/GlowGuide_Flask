@@ -530,14 +530,6 @@ def render_results():
 
     visible_products = results[results['category_name'].isin(category_selection)]
 
-    col1, col2 = st.columns([1.2, 1], gap="small")
-    with col1:
-        if st.button('Select all products'):
-            st.session_state.selected_products = results['product_id'].tolist()
-    with col2:
-        if st.button('Clear selections'):
-            st.session_state.selected_products = []
-
     selected_ids = set(st.session_state.selected_products)
     for _, row in visible_products.iterrows():
         key = f'product_select_{int(row.product_id)}'
